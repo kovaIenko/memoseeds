@@ -25,4 +25,7 @@
       <IncludeInPackage>true</IncludeInPackage>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Models\appsettings.json" />
+  </ItemGroup>
 </Project>
