@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace memoseeds.Models.Entities
 {
@@ -8,5 +9,7 @@ namespace memoseeds.Models.Entities
         public String name { get; set; }
         public int moduleId { get; set;  }
         public String definition { get; set; }
+        public virtual ICollection<Term> terms { get; set; }
+        public virtual ICollection<Collector> collectors { get; set; }
     }
 }
