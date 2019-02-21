@@ -15,10 +15,11 @@
   <ItemGroup>
     <Folder Include="Models\Entities\" />
     <Folder Include="Models\Database\" />
-    <Folder Include="Models\Services\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Database\ApplicationDbContext.cs" />
+    <Compile Remove="Models\Entities\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">
