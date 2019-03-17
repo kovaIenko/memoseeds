@@ -18,9 +18,9 @@
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Database\ApplicationDbContext.cs" />
     <Compile Remove="Services\IUserDataService.cs" />
     <Compile Remove="Controllers\HomeController.cs" />
+    <Compile Remove="Database\ApplicationDbContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">
