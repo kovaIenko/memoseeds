@@ -20,6 +20,7 @@
   <ItemGroup>
     <Compile Remove="Database\ApplicationDbContext.cs" />
     <Compile Remove="Services\IUserDataService.cs" />
+    <Compile Remove="Controllers\HomeController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">
