@@ -14,10 +14,25 @@ namespace memoseeds.Controllers
         }
 
         // GET: 
-        [HttpGet("/hello")]
-        public JsonResult Get()
+        [HttpPost("/login")]
+        public JsonResult login([FromBody]UserDataLogin data)
         {
-            return Json("Hello, we are memoseeds");
+            return Json("Hello, " + data.log + " " + data.pass);
+        }
+
+        // GET: 
+        [HttpGet("/login")]
+        public JsonResult login2()
+        {
+            return Json("Hello, ");
+        }
+
+
+
+        public class UserDataLogin
+        {
+            public string log { get; set; }
+            public string pass { get; set; }
         }
     }
 }
