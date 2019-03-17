@@ -12,5 +12,12 @@ namespace memoseeds.Controllers
         {
             _context = context;
         }
+
+        // GET: 
+        [HttpGet("/hello")]
+        public JsonResult Get()
+        {
+            return Json("Hello, we are memoseeds");
+        }
     }
 }
