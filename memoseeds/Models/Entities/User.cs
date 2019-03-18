@@ -8,28 +8,22 @@ namespace memoseeds.Models.Entities
     public class User
     {
 
-        public User(string name, string email, string password)
-        {
-            this.name = name;
-            this.email = email;
-            this.password = password;
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Display(Name = "id")]
-        public long userId { get; set; }
+        public long UserId { get; set; }
 
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public string password{ get; set; }
+        [DataType(DataType.Password)]
+        public string Password{ get; set; }
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "money")]
-        public decimal money { get; set; }
+        public decimal Money { get; set; }
 
-        public string email { get; set; }
+        public string Email { get; set; }
 
-        public virtual ICollection<Collector> collectors { get; set; }
+        public virtual ICollection<Collector> Collectors { get; set; }
     }
 }
