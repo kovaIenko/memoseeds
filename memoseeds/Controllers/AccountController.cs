@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace memoseeds.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private ApplicationDbContext db;
@@ -25,21 +24,25 @@ namespace memoseeds.Controllers
 
         // GET: 
         [HttpGet("/login")]
-        public IActionResult Login()
+        public JsonResult Login()
         {
-            return View();
+            return Json("he");
         }
+
         // POST: 
         [HttpPost("/login")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromBody]UserLoginData data)
         {
+            Console.WriteLine("Hello " + data);
+
             if (ModelState.IsValid)
             {
                 User user = await db.Users.FirstOrDefaultAsync(
                     u => u.Name == data.Login &&
                          u.Password == data.Password
                     );
+
                 if(user != null)
                 {
                     await Authenticate(data.Login);
@@ -50,13 +53,10 @@ namespace memoseeds.Controllers
             return View(data);
         }
 
-
-
-
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return Json("You, ");
         }
 
         [HttpPost]
@@ -73,7 +73,6 @@ namespace memoseeds.Controllers
                     await db.SaveChangesAsync();
 
                     await Authenticate(data.Login); // authentification
-
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -81,10 +80,6 @@ namespace memoseeds.Controllers
             }
             return View(data);
         }
-
-
-
-
 
         private async Task Authenticate(string userName)
         {
@@ -100,9 +95,6 @@ namespace memoseeds.Controllers
                 );
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
-
-
-
 
         public class UserLoginData
         {
