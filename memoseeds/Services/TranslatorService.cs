@@ -67,7 +67,7 @@ namespace memoseeds.Services
                  string sourceLanguage,
                  string targetLanguage)
             {
-                // Initialize
+            // Initialize
                 this.Error = null;
                 this.TranslationSpeechUrl = null;
                 this.TranslationTime = TimeSpan.Zero;

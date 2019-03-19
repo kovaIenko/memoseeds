@@ -28,7 +28,6 @@ namespace memoseeds.Controllers
              db = context;
             _config = config;
         }
-
         // GET: 
         [HttpGet("/login")]
         public JsonResult Login()

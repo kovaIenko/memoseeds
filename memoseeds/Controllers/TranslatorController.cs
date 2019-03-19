@@ -1,44 +1,51 @@
 using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using memoseeds.Database;
+using memoseeds.Models.Entities;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using memoseeds.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
 namespace memoseeds.Controllers
 {
+    [ApiController]
     public class TranslatorController : Controller
     {
-        // TODO реалізувати API для фронтенду.  
-        // Інформація передаватиметься за допомогою json
+        private readonly ITranslatorService translatorService;
 
-            //All languages format should be Full. I.E. English, Ukrainian, Bulgarian 
-        public void translateMethod(String json){
-            //getting json object
-            JObject jObject = JObject.Parse(json);
-            //parsing it
-            string sourceText = (string)jObject.SelectToken("sourceText");
-            string sourceLanguage = (string)jObject.SelectToken("sourceLanguage");
-            string targetLanguage = (string)jObject.SelectToken("targetLanguage");
+        public TranslatorController(ITranslatorService service)
+        {
+            this.translatorService = service;
+        }
 
-            //creates object that manages translation
-            TranslatorService ts = new TranslatorService();
-            //translates user text from A language to B language
-            String transResponse = ts.translate(sourceText, sourceLanguage, targetLanguage);
+        //All languages format should be Full. I.E. English, Ukrainian, Bulgarian
+        [HttpPost("/translate")]
+        public IActionResult Translate([FromBody]TermToTranslate term)
+        {
+            string transResponse = translatorService.translate(term.SourceText, term.SourceLanguage, term.TargetLanguage);
+            return Json(transResponse);
+        }
 
-            //sending response
-            string response_json = "{\"translation\":\"" + transResponse + "\"}";
-            Response.Clear();
-            Response.ContentType = "application/json; charset=utf-8";
-            Response.Write(json);
-            Response.End();
+        public class TermToTranslate
+        {
+            [Required(ErrorMessage = "Source not specified")]
+            public string SourceText { get; set; }
 
-        } 
+            [Required(ErrorMessage = "Source language not specified")]
+            public string SourceLanguage { get; set; }
 
-
+            [Required(ErrorMessage = "Target language not specified")]
+            public string TargetLanguage { get; set; }
+        }
     }
 
 }
