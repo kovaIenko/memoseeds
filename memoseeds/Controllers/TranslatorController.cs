@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 
 namespace memoseeds.Controllers
 {
+    [Authorize]
     [ApiController]
     public class TranslatorController : Controller
     {
