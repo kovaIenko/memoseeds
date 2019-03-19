@@ -8,6 +8,6 @@ namespace memoseeds.Models.Entities
     {
         public int subjectId { get; set;}
         public String name { get; set; }
-        public virtual ICollection<Category> categories { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
     }
 }

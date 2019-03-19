@@ -10,6 +10,7 @@ namespace memoseeds.Models.Entities
         public String name { get; set; }
         public Boolean isDefault { get; set;  }
         public Boolean isFree { get; set; }
-        public virtual ICollection<Module> modules { get; set; }
+        public virtual ICollection<Module> Modules { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

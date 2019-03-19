@@ -8,6 +8,6 @@ namespace memoseeds.Models.Entities
         public int categoryId { get; set;  }
         public String name { get; set; }
         public int subjectId { get; set;  }
-        public virtual ICollection<Course> courses { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

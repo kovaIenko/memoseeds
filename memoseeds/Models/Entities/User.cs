@@ -25,5 +25,6 @@ namespace memoseeds.Models.Entities
         public string Email { get; set; }
 
         public virtual ICollection<Collector> Collectors { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace memoseeds.Models.Entities
         public String name { get; set; }
         public int moduleId { get; set;  }
         public String definition { get; set; }
-        public virtual ICollection<Collector> collectors { get; set; }
+        public virtual ICollection<Collector> Collectors { get; set; }
     }
 }

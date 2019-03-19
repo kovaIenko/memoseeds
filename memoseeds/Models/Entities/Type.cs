@@ -7,6 +7,6 @@ namespace memoseeds.Models.Entities
     {
         public int typeId { get; set;  }
         public String name { get; set; }
-        public virtual ICollection<Collector> collectors { get; set; }
+        public virtual ICollection<Collector> Collectors { get; set; }
     }
 }
