@@ -1,0 +1,39 @@
+{
+  "Ukraine": {
+    {
+      "Credits": 500,
+      "Name": "Clever goat",
+      "Price": {
+        "Amount": 100,
+        "Currency": "UAH"
+      }
+    },
+    {
+      "Credits": 1000,
+      "Name": "Smart hare",
+      "Price": {
+        "Amount": 190,
+        "Currency": "UAH"
+      }
+    }
+  },
+
+  "USA": {
+    {
+      "Credits": 500,
+      "Name": "Clever goat",
+      "Price": {
+        "Amount": 10,
+        "Currency": "USD"
+      }
+    },
+    {
+      "Credits": 1000,
+      "Name": "Smart hare",
+      "Price": {
+        "Amount": 19,
+        "Currency": "USD"
+      }
+    }
+  }
+}
