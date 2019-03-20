@@ -24,6 +24,8 @@
     <Compile Remove="Database\ApplicationDbContext.cs" />
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\WebAPIController.cs" />
+    <Compile Remove="лоь.cs" />
+    <Compile Remove="AllowCrossSiteJsonAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">

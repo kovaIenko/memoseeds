@@ -32,16 +32,16 @@ namespace memoseeds.Controllers
         [HttpGet("/login")]
         public JsonResult Login()
         {
-            return Json("hello, blyad");
+            return Json("hello");
         }
 
         // POST:
         [AllowAnonymous]
         [HttpPost("/login")]
-        public IActionResult Login([FromBody]UserLoginData login)
+        public async Task<IActionResult> Login([FromBody]UserLoginData login)
         {
             IActionResult response = Unauthorized();
-            var user = AuthenticateUser(login);
+            var user = await AuthenticateUserAsync(login);
             if (user != null)
             {
                 var tokenString = GenerateJSONWebToken(user);
@@ -50,13 +50,13 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        private string GenerateJSONWebToken(UserLoginData userInfo)
+        private string GenerateJSONWebToken(User userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-            new Claim(JwtRegisteredClaimNames.Sub, userInfo.Login),
+            new Claim(JwtRegisteredClaimNames.Sub, userInfo.UserName),
        // new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress),
        //new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -70,20 +70,22 @@ namespace memoseeds.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-        
 
-        private UserLoginData AuthenticateUser(UserLoginData data)
+        private async Task<User> AuthenticateUserAsync(UserLoginData data)
         {
             //User user = await db.Users.FirstOrDefaultAsync(
-                    //u => u.Name == data.Login &&
-                    //     u.Password == data.Password
-                    //);
-            // if (data != null) return data;
-            return data;
-
+            //u => u.UserName == data.Login &&
+            //     u.Password == data.Password
+            //);
+            User user = new User
+            {
+                UserName = data.Login,
+                Password = data.Password
+            };
+            return user;
         }
 
-        //[HttpPost]
+        //[HttpPost("/signup")]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Register(UserRegisterData data)
         //{

@@ -4,7 +4,7 @@ using memoseeds.Models.Entities;
 
 namespace memoseeds.Database
 {
-        public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
         {
             public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
             {
