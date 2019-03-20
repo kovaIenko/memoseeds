@@ -17,7 +17,7 @@ namespace memoseeds.Controllers
         {
             string configJSON = null;
             string dataJSON = null;
-            string purchaseRepoPath = System.Environment.GetEnvironmentVariable("Path");
+            string purchaseRepoPath = System.Environment.CurrentDirectory;
             using (
                 StreamReader
                 configFile = new StreamReader(purchaseRepoPath + "\\Repositories\\Purchase\\config.json"),
@@ -29,5 +29,13 @@ namespace memoseeds.Controllers
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<Purchase>>>(dataJSON);
         }
+
+        [HttpGet("hel")]
+        public string get()
+        {
+            Dictionary<string, List<Purchase>> gjhrd  = countryToPurchases;
+            return "erjfdk";
+        }
     }
+   
 }
