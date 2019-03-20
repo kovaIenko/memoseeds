@@ -20,6 +20,6 @@ namespace memoseeds.Repositories
     {
         public int Credits { get; set; }
         public string Name { get; set; }
-        public int Price { get; set; }
+        public Price Price { get; set; }
     }
 }

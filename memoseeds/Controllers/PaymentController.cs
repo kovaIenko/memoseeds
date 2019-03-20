@@ -2,12 +2,11 @@
 using System.IO;
 using memoseeds.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
 namespace memoseeds.Controllers
 {
-    [Route("purchaseOptions")]
+    [Route("purchase")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
@@ -30,11 +29,11 @@ namespace memoseeds.Controllers
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<Purchase>>>(dataJSON);
         }
 
-        [HttpGet("hel")]
-        public string get()
+        [HttpGet("options")]
+        public string getOptions()
         {
             Dictionary<string, List<Purchase>> gjhrd  = countryToPurchases;
-            return "erjfdk";
+            return "hello";
         }
     }
    

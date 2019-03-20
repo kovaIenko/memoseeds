@@ -1,5 +1,5 @@
 {
-  "Ukraine": {
+  "Ukraine": [
     {
       "Credits": 500,
       "Name": "Clever goat",
@@ -16,9 +16,9 @@
         "Currency": "UAH"
       }
     }
-  },
+  ],
 
-  "USA": {
+  "USA": [
     {
       "Credits": 500,
       "Name": "Clever goat",
@@ -35,5 +35,5 @@
         "Currency": "USD"
       }
     }
-  }
+  ]
 }
