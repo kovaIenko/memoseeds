@@ -32,6 +32,17 @@ namespace memoseeds.Controllers
         [HttpGet("/login")]
         public JsonResult Login()
         {
+            //User u = new User()
+            //{ 
+            //    Username = "kovalenko",
+            //    Password = "12345",
+            //    Money = 32,
+            //    Email = "ruskov004@gmail.com"
+                
+            //};
+
+            //db.Users.Add(u);
+            //db.SaveChanges();
             return Json("hello");
         }
 
@@ -56,7 +67,7 @@ namespace memoseeds.Controllers
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[] {
-            new Claim(JwtRegisteredClaimNames.Sub, userInfo.UserName),
+            new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
        // new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress),
        //new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -73,15 +84,10 @@ namespace memoseeds.Controllers
 
         private async Task<User> AuthenticateUserAsync(UserLoginData data)
         {
-            //User user = await db.Users.FirstOrDefaultAsync(
-            //u => u.UserName == data.Login &&
-            //     u.Password == data.Password
-            //);
-            User user = new User
-            {
-                UserName = data.Login,
-                Password = data.Password
-            };
+            User user = await db.Users.FirstOrDefaultAsync(
+            u => u.Username == data.Username &&
+                 u.Password == data.Password
+            );
             return user;
         }
 
@@ -124,8 +130,8 @@ namespace memoseeds.Controllers
 
         public class UserLoginData
         {
-            [Required(ErrorMessage = "Login not specified")]
-            public string Login { get; set; }
+            [Required(ErrorMessage = "Username not specified")]
+            public string Username { get; set; }
 
             [Required(ErrorMessage = "Password not specified")]
             [DataType(DataType.Password)]
@@ -134,8 +140,8 @@ namespace memoseeds.Controllers
 
         public class UserRegisterData
         {
-            [Required(ErrorMessage = "Login not specified")]
-            public string Login { get; set; }
+            [Required(ErrorMessage = "Username not specified")]
+            public string Username { get; set; }
 
             [Required(ErrorMessage = "Email not specified")]
             public string Email { get; set; }

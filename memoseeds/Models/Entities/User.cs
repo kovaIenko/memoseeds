@@ -2,29 +2,42 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using memoseeds.Models.Entities;
 
 namespace memoseeds.Models.Entities
 {
+    [Table("users")]
     public class User
     {
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Display(Name = "id")]
-        public long UserId { get; set; }
+        [Column("id")]
+        public int UserId { get; set; }
 
-        public string UserName { get; set; }
+        [Required]
+        [Column("username")]
+        [Index(IsUnique = true)]
+        public string Username { get; set; }
 
+        [Required]
+        [Column("password")]
         [DataType(DataType.Password)]
         public string Password{ get; set; }
 
         [DataType(DataType.Currency)]
-        [Column(TypeName = "money")]
+        [Column("money")]
         public decimal Money { get; set; }
 
+        [Required]
+        [Column("email")]
+        [Index(IsUnique = true)]
+        [EmailAddress]
         public string Email { get; set; }
 
         public virtual ICollection<Collector> Collectors { get; set; }
-        public virtual ICollection<Course> Courses { get; set; }
+
+        public ICollection<AquiredCourses> Aquireds { get; set; }
+
+        public virtual ICollection<VisibleCourses> Visibles { get; set; }
     }
 }

@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace memoseeds.Models.Entities
 {
+    [Table("collector")]
     public class Collector
     {
-        public int collectorId { get; set;  }
-        public int termId { get; set; }
-        public int userId { get; set; }
-        public virtual ICollection<Term> Terms { get; set; }
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<Type> Types { get; set; }
+        [Key]
+        [Column("id")]
+        public int CollectorId { get; set;  }
+
+        [Column("term")]
+        public int TermId { get; set; }
+        public Term Term { get; set; }
+
+        [Column("user")]
+        public int UserId { get; set; }
+        public User User { get; set; }
+
+        public virtual ICollection<Completion> Completions { get; set; }
     }
 }
