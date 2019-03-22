@@ -41,4 +41,5 @@ Thumbs.db
 *.dotCover
 
 appsettings.json
+Migrations
 .idea/
