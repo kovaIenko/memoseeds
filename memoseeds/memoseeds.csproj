@@ -33,6 +33,7 @@
     <Compile Remove="Migrations\20190211152308_postgresqlMigration.cs" />
     <Compile Remove="Migrations\20190321125244_latesMigration.cs" />
     <Compile Remove="Migrations\20190321234848_latesMigration.cs" />
+    <Compile Remove="Migrations\20190321235031_latesMigration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">
