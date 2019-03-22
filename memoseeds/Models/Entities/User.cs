@@ -16,7 +16,6 @@ namespace memoseeds.Models.Entities
 
         [Required]
         [Column("username")]
-        [Index(IsUnique = true)]
         public string Username { get; set; }
 
         [Required]
@@ -30,7 +29,6 @@ namespace memoseeds.Models.Entities
 
         [Required]
         [Column("email")]
-        [Index(IsUnique = true)]
         [EmailAddress]
         public string Email { get; set; }
 

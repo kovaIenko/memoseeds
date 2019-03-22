@@ -28,13 +28,6 @@ namespace memoseeds.Controllers
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<Purchase>>>(dataJSON);
         }
-
-        [HttpGet("options")]
-        public string getOptions()
-        {
-            Dictionary<string, List<Purchase>> gjhrd  = countryToPurchases;
-            return "hello";
-        }
     }
    
 }
