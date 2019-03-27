@@ -4,6 +4,7 @@ using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace memoseeds.Controllers
 {
@@ -43,13 +44,19 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("options")]
-        public string allPurchases(UserInfo info)
+        public ActionResult allPurchases(UserInfo info)
         {
-            if(info.country == null)
+            string countryRes = info.country;
+
+            if(!countryToPurchases.ContainsKey(countryRes))
             {
-                info.country = PaymentController.purchaseConfig.defaultCountry;
+                countryRes = purchaseConfig.defaultCountry;
             }
-            return info.country;
+
+            string puchasesList = JsonConvert.SerializeObject(countryToPurchases[countryRes]);
+            ActionResult res = new ContentResult { Content = puchasesList, ContentType = "application/json" };
+
+            return res;
         }
     }
 
