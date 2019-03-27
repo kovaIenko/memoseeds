@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using memoseeds.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
+using memoseeds.Repositories.Purchase.DataConfig;
+using memoseeds.Repositories.Purchase.Requests;
 
 namespace memoseeds.Controllers
 {
@@ -13,7 +13,7 @@ namespace memoseeds.Controllers
     public class PaymentController : Controller
     {
         private static PurchaseConfig purchaseConfig; 
-        private static Dictionary<string, List<Purchase>> countryToPurchases = null;
+        private static Dictionary<string, List<PurchaseData>> countryToPurchases = null;
         static PaymentController()
         {
             string configJSON = null;
@@ -28,37 +28,54 @@ namespace memoseeds.Controllers
                 dataJSON = dataFile.ReadToEnd();
             }
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
-            PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<Purchase>>>(dataJSON);
+            PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<PurchaseData>>>(dataJSON);
             setupIds(PaymentController.countryToPurchases);
         }
-        private static void setupIds(Dictionary<string, List<Purchase>> d)
+
+        private static void setupIds(Dictionary<string, List<PurchaseData>> d)
         {
             foreach (string key in d.Keys)
             {
                 int i = -1;
-                foreach (Purchase p in d[key])
+                foreach (PurchaseData p in d[key])
                 {
                     p.Id = key + (++i);
                 }
             }
         }
+        private static PurchaseData findPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
+        {
+            foreach (string key in d.Keys)
+            {
+                foreach (PurchaseData p in d[key])
+                {
+                    if(p.Id == id)
+                    {
+                        return p;
+                    }
+                }
+            }
+            return null;
+        }
 
         [HttpPost("options")]
-        public ActionResult allPurchases(UserInfo info)
+        public ActionResult provideOptions(UserInfo info)
         {
-            string countryRes = info.country;
-
-            if(!countryToPurchases.ContainsKey(countryRes))
-            {
-                countryRes = purchaseConfig.defaultCountry;
-            }
+            string countryRes = info.country ?? purchaseConfig.defaultCountry;
 
             string puchasesList = JsonConvert.SerializeObject(countryToPurchases[countryRes]);
             ActionResult res = new ContentResult { Content = puchasesList, ContentType = "application/json" };
 
             return res;
         }
-    }
 
-    
+        [HttpPost("beginCheckout")]
+        public ActionResult beginCheckout(CheckoutInfo info)
+        {
+            string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
+            PurchaseData data = findPurchaseData(PaymentController.countryToPurchases, id);
+            //start performing payment process here
+            return null;
+        }
+    }
 }

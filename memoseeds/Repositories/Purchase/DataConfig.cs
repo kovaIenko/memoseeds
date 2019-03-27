@@ -1,8 +1,9 @@
-﻿namespace memoseeds.Repositories
+﻿namespace memoseeds.Repositories.Purchase.DataConfig
 {
     public class PurchaseConfig
     {
         public string defaultCountry { get; set; }
+        public string defaultPurchaseId { get; set; }
     }
 
     public class Price
@@ -11,7 +12,7 @@
         public string Currency { get; set; }
     }
 
-    public class Purchase
+    public class PurchaseData
     {
         public int Credits { get; set; }
         public string Name { get; set; }
