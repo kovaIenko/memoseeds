@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace memoseeds.Repositories
+﻿namespace memoseeds.Repositories
 {
     public class PurchaseConfig
     {
-
+        public string defaultCountry { get; set; }
     }
 
     public class Price

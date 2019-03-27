@@ -42,33 +42,14 @@ namespace memoseeds.Controllers
             }
         }
 
-        [HttpPost("/options")]
+        [HttpPost("options")]
         public string allPurchases(UserInfo info)
         {
+            if(info.country == null)
+            {
+                info.country = PaymentController.purchaseConfig.defaultCountry;
+            }
             return info.country;
-        }
-
-        [HttpGet("/foo")]
-        public string foo()
-        {
-            return "foo";
-        }
-
-        [HttpGet("/login")]
-        public JsonResult Login()
-        {
-            //User u = new User()
-            //{ 
-            //    Username = "kovalenko",
-            //    Password = "12345",
-            //    Money = 32,
-            //    Email = "ruskov004@gmail.com"
-
-            //};
-
-            //db.Users.Add(u);
-            //db.SaveChanges();
-            return Json("hello");
         }
     }
 
