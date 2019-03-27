@@ -49,7 +49,7 @@ namespace memoseeds.Controllers
         // POST:
         [AllowAnonymous]
         [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody]UserLoginData login)
+        public async Task<IActionResult> Login([FromBody]UserAuthenticateData login)
         {
             IActionResult response = Unauthorized();
             var user = await AuthenticateUserAsync(login);
@@ -69,7 +69,7 @@ namespace memoseeds.Controllers
             var claims = new[] {
             new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
        // new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress),
-       //new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
+       // new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
@@ -82,7 +82,7 @@ namespace memoseeds.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<User> AuthenticateUserAsync(UserLoginData data)
+        private async Task<User> AuthenticateUserAsync(UserAuthenticateData data)
         {
             User user = await db.Users.FirstOrDefaultAsync(
             u => u.Username == data.Username &&
@@ -91,44 +91,35 @@ namespace memoseeds.Controllers
             return user;
         }
 
-        //[HttpPost("/signup")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Register(UserRegisterData data)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        User user = await db.Users.FirstOrDefaultAsync(u => u.Name == data.Login);
-        //        if (user == null)
-        //        {
-        //            // adding user to db
-        //            db.Users.Add(new User { Name = data.Login, Email = data.Email, Password = data.Password });
-        //            await db.SaveChangesAsync();
+        [HttpPost("/signup")]
+        public async Task<IActionResult> Register(UserRegisterData data)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await db.Users.FirstOrDefaultAsync(u => 
+                    u.Username == data.Username ||
+                    u.Email == data.Email
+                    );
+                if (user == null)
+                {
+                    // adding user to db
+                    user = new User
+                    {
+                        Username = data.Username,
+                        Email = data.Email,
+                        Password = data.Password
+                    };
+                    db.Users.Add(user);
+                    await db.SaveChangesAsync();
+                    return Ok(new { token = GenerateJSONWebToken(user) });
+                }
+                else
+                    ModelState.AddModelError("ErrorStack", "This login or email is already taken");
+            }
+            return BadRequest(ModelState);
+        }
 
-        //            await Authenticate(data.Login); // authentification
-        //            return RedirectToAction("Index", "Home");
-        //        }
-        //        else
-        //            ModelState.AddModelError("", "Incorrect login and(or) password");
-        //    }
-        //    return View(data);
-        //}
-
-        //private async Task Authenticate(string userName)
-        //{
-        //    var claims = new List<Claim>
-        //    {
-        //        new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
-        //    };
-        //    ClaimsIdentity id = new ClaimsIdentity(
-        //        claims,
-        //        "ApplicationCookie",
-        //        ClaimsIdentity.DefaultNameClaimType,
-        //        ClaimsIdentity.DefaultRoleClaimType
-        //        );
-        //    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
-        //}
-
-        public class UserLoginData
+        public class UserAuthenticateData
         {
             [Required(ErrorMessage = "Username not specified")]
             public string Username { get; set; }
