@@ -15,6 +15,7 @@ namespace memoseeds.Models.Entities
         public int UserId { get; set; }
 
         [Required]
+        [Index(IsUnique = true)]
         [Column("username")]
         public string Username { get; set; }
 
@@ -23,19 +24,19 @@ namespace memoseeds.Models.Entities
         [DataType(DataType.Password)]
         public string Password{ get; set; }
 
-        [DataType(DataType.Currency)]
-        [Column("money")]
-        public decimal Money { get; set; }
+        [Column("credits")]
+        public int Credits { get; set; }
 
         [Required]
+        [Index(IsUnique = true)]
         [Column("email")]
         [EmailAddress]
         public string Email { get; set; }
 
         public virtual ICollection<Collector> Collectors { get; set; }
 
-        public ICollection<AquiredCourses> Aquireds { get; set; }
+        public virtual ICollection<AquiredModules> Aquireds { get; set; }
 
-        public virtual ICollection<VisibleCourses> Visibles { get; set; }
+        public virtual ICollection<VisibleModules> Visibles { get; set; }
     }
 }

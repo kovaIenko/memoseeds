@@ -35,6 +35,7 @@
     <Compile Remove="Migrations\20190321125244_latesMigration.cs" />
     <Compile Remove="Migrations\20190321234848_latesMigration.cs" />
     <Compile Remove="Migrations\20190321235031_latesMigration.cs" />
+    <Compile Remove="Migrations\20190328134303_migrations.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Startup.cs">
@@ -43,5 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Models\appsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Simple\.babelrc" />
   </ItemGroup>
 </Project>

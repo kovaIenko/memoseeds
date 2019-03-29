@@ -17,13 +17,24 @@ namespace memoseeds.Models.Entities
         public int AuthorId { get; set;  }
 
         [Required]
+        [Column("is_free")]
+        public Boolean IsFree { get; set; }
+
+        [Required]
+        [Column("is_local")]
+        public Boolean IsLocal { get; set; }
+
+        [Required]
         [Column("name")]
         public string Name { get; set; }
 
         [Column("course")]
         public int? CourseId { get; set; }
-        public Course Course { get; set; }
+        public Category Course { get; set; }
 
         public virtual ICollection<Term> Terms { get; set; }
+
+        public virtual ICollection<AquiredModules> Aquireds { get; set; }
+        public virtual ICollection<VisibleModules> Visibles { get; set; }
     }
 }

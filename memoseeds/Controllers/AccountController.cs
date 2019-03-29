@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,22 +26,21 @@ namespace memoseeds.Controllers
              db = context;
             _config = config;
         }
-        // GET: 
-        [HttpGet("/login")]
-        public JsonResult Login()
-        {
-            //User u = new User()
-            //{ 
-            //    Username = "kovalenko",
-            //    Password = "12345",
-            //    Money = 32,
-            //    Email = "ruskov004@gmail.com"
-                
-            //};
 
-            //db.Users.Add(u);
-            //db.SaveChanges();
-            return Json("hello");
+        [AllowAnonymous]
+        [HttpGet("/login")]
+        public void log()
+        {
+            db.Users.Add(new User()
+            {
+                Username = "kovalenko",
+                Email = "ruskov@gmail.com",
+                Password="qwerty123",
+                Credits = 5000
+
+
+            });
+            db.SaveChanges();
         }
 
         // POST:

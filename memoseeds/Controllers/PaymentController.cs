@@ -10,7 +10,7 @@ using System;
 
 namespace memoseeds.Controllers
 {
-    [Route("purchase")]
+    //[Route("purchase")]
     [ApiController]
     public class PaymentController : Controller
     {

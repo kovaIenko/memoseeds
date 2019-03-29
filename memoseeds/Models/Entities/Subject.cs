@@ -13,6 +13,7 @@ namespace memoseeds.Models.Entities
         public int SubjectId { get; set;}
 
         [Required]
+        [Index(IsUnique = true)]
         [Column("name")]
         public string Name { get; set; }
 

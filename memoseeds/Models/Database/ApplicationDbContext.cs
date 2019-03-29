@@ -16,7 +16,7 @@ namespace memoseeds.Database
         public DbSet<Models.Entities.Type> Types { get; set; }
         public DbSet<Term> Terms { get; set; }
         public DbSet<Module> Modules { get; set; }
-        public DbSet<Course> Courses { get; set; }
+        public DbSet<Category> Courses { get; set; }
         public DbSet<Completion> Completions { get; set; }
         public DbSet<Collector> Collectors { get; set; }
     }
