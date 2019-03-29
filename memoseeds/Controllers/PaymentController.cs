@@ -73,10 +73,19 @@ namespace memoseeds.Controllers
         [HttpPost("options")]
         public ActionResult provideOptions(UserInfo info)
         {
-            string countryRes = info.country ?? purchaseConfig.defaultCountry;
+            string countryRes = info.country;
+            if (info.country == null || info.country.Length < 1)
+            {
+                countryRes = purchaseConfig.defaultCountry;
+            }
 
-            string puchasesList = JsonConvert.SerializeObject(countryToPurchases[countryRes]);
-            ActionResult res = new ContentResult { Content = puchasesList, ContentType = "application/json" };
+            PurchasesInfo purchasesInfo = new PurchasesInfo(
+                countryToPurchases[countryRes],
+                purchaseConfig.stripeConfig.publishableKey
+            );
+
+            string resInfo = JsonConvert.SerializeObject(purchasesInfo);
+            ActionResult res = new ContentResult { Content = resInfo, ContentType = "application/json" };
 
             return res;
         }
