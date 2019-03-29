@@ -14,8 +14,10 @@ namespace memoseeds.Controllers
     [ApiController]
     public class PaymentController : Controller
     {
-        private static PurchaseConfig purchaseConfig; 
+        private static PurchaseConfig purchaseConfig = null; 
         private static Dictionary<string, List<PurchaseData>> countryToPurchases = null;
+        private static CustomerService customerService = null;
+        private static ChargeService chargeService = null;
         static PaymentController()
         {
             string configJSON = null;
@@ -49,6 +51,9 @@ namespace memoseeds.Controllers
         private static void setupStripe(PurchaseConfig purchaseConfig)
         {
             StripeConfiguration.SetApiKey(purchaseConfig.stripeConfig.secretKey);
+
+            customerService = new CustomerService();
+            chargeService = new ChargeService();
         }
         private static PurchaseData findPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
         {
@@ -76,30 +81,38 @@ namespace memoseeds.Controllers
             return res;
         }
 
-        [HttpPost("beginCheckout")]
-        public ActionResult beginCheckout(CheckoutInfo info)
+        [HttpPost("checkout")]
+        public ActionResult tryCheckout(CheckoutInfo info)
         {
             string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
-            PurchaseData data = findPurchaseData(PaymentController.countryToPurchases, id);
-            //start performing payment process here
-            return null;
-        }
+            PurchaseData purchase = findPurchaseData(PaymentController.countryToPurchases, id);
 
-        [HttpPost("foo")]
-        public void foo()
-        {
-         
-
-            var options = new ChargeCreateOptions
+            ActionResult res = null;
+            try
             {
-                Amount = 999,
-                Currency = "usd",
-                SourceId = "tok_visa",
-                ReceiptEmail = "jenny.rosen@example.com",
-            };
-            var service = new ChargeService();
-            Charge charge = service.Create(options);
-            var stop = 0;
+                var customer = customerService.Create(new CustomerCreateOptions
+                {
+                    Email = info.email,
+                    SourceToken = info.sourceToken
+                });
+
+                var charge = chargeService.Create(new ChargeCreateOptions
+                {
+                    Amount = purchase.price.amount,
+                    Description = purchase.name,
+                    Currency = purchase.price.currency,
+                    CustomerId = customer.Id
+                });
+
+                string chargeString = JsonConvert.SerializeObject(charge);
+                res = new ContentResult { Content = chargeString, ContentType = "application/json" };
+
+            } catch(Exception e)
+            {
+                res = null;
+            }
+
+            return res;
         }
     }
 }
