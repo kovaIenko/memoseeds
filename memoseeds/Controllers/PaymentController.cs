@@ -44,7 +44,7 @@ namespace memoseeds.Controllers
                 int i = -1;
                 foreach (PurchaseData p in d[key])
                 {
-                    p.Id = key + (++i);
+                    p.id = key + (++i);
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace memoseeds.Controllers
             {
                 foreach (PurchaseData p in d[key])
                 {
-                    if(p.Id == id)
+                    if(p.id == id)
                     {
                         return p;
                     }

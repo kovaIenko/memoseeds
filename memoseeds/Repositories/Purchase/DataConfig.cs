@@ -50,7 +50,7 @@
         public int credits { get; private set; }
         public string name { get; private set; }
         public Price price { get; private set; }
-        public string id { get; private set; } = null;
+        public string id { get; set; } = null;
 
         public PurchaseData(
             int credits, 
