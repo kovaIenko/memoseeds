@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using memoseeds.Repositories.Purchase.DataConfig;
+using memoseeds.Repositories.Purchase.Requests;
+
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-
-using memoseeds.Repositories.Purchase.DataConfig;
-using memoseeds.Repositories.Purchase.Requests;
+using Stripe;
+using System;
 
 namespace memoseeds.Controllers
 {
@@ -30,6 +32,7 @@ namespace memoseeds.Controllers
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<PurchaseData>>>(dataJSON);
             setupIds(PaymentController.countryToPurchases);
+            setupStripe(PaymentController.purchaseConfig);
         }
 
         private static void setupIds(Dictionary<string, List<PurchaseData>> d)
@@ -42,6 +45,10 @@ namespace memoseeds.Controllers
                     p.Id = key + (++i);
                 }
             }
+        }
+        private static void setupStripe(PurchaseConfig purchaseConfig)
+        {
+            StripeConfiguration.SetApiKey(purchaseConfig.stripeConfig.secretKey);
         }
         private static PurchaseData findPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
         {
@@ -76,6 +83,23 @@ namespace memoseeds.Controllers
             PurchaseData data = findPurchaseData(PaymentController.countryToPurchases, id);
             //start performing payment process here
             return null;
+        }
+
+        [HttpPost("foo")]
+        public void foo()
+        {
+         
+
+            var options = new ChargeCreateOptions
+            {
+                Amount = 999,
+                Currency = "usd",
+                SourceId = "tok_visa",
+                ReceiptEmail = "jenny.rosen@example.com",
+            };
+            var service = new ChargeService();
+            Charge charge = service.Create(options);
+            var stop = 0;
         }
     }
 }

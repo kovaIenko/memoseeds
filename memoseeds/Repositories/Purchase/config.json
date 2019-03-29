@@ -1,4 +1,9 @@
 {
   "defaultCountry": "Ukraine",
-  "defaultPurchaseId":  "Ukraine0"
+  "defaultPurchaseId": "Ukraine0",
+
+  "stripeConfig": {
+    "publishableKey": "pk_test_ob6s7KZxZU1mouJbbsuFBjEe",
+    "secretKey": "pk_test_ob6s7KZxZU1mouJbbsuFBjEe"
+  }
 }

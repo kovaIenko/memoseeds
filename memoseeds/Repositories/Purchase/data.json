@@ -1,18 +1,18 @@
 {
   "Ukraine": [
     {
-      "Credits": 500,
-      "Name": "Clever goat",
-      "Price": {
-        "Amount": 100,
+      "credits": 500,
+      "name": "Clever goat",
+      "price": {
+        "currency": 100,
         "Currency": "UAH"
       }
     },
     {
-      "Credits": 1000,
-      "Name": "Smart hare",
-      "Price": {
-        "Amount": 190,
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "currency": 190,
         "Currency": "UAH"
       }
     }
@@ -20,18 +20,18 @@
 
   "USA": [
     {
-      "Credits": 500,
-      "Name": "Clever goat",
-      "Price": {
-        "Amount": 10,
+      "credits": 500,
+      "name": "Clever goat",
+      "price": {
+        "currency": 10,
         "Currency": "USD"
       }
     },
     {
-      "Credits": 1000,
-      "Name": "Smart hare",
-      "Price": {
-        "Amount": 19,
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "currency": 19,
         "Currency": "USD"
       }
     }
