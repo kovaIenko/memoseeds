@@ -18,12 +18,11 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("public/modules")]
-        public JsonResult getAllPublicModules()
+        public JsonResult GetAllPublicModules()
         {
             ICollection<Module> modules = ModuleRepository.GetPublicModules();
             return Json(modules);
         }
-
 
     }
 }

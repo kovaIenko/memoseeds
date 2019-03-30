@@ -29,7 +29,7 @@ namespace memoseeds.Controllers
 
         [AllowAnonymous]
         [HttpGet("/login")]
-        public JsonResult log()
+        public JsonResult Log()
         {
             //db.Users.Add(new User()
             //{
@@ -53,7 +53,7 @@ namespace memoseeds.Controllers
             if (user != null)
             {
                 var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new { token = tokenString });
+                response = Ok(new { token = tokenString, info = user});
             }
             return response;
         }
