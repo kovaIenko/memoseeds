@@ -4,13 +4,11 @@ using System.Data.Entity;
 using System.Linq;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace memoseeds.Repositories
 {
     public class UserRepository : IRepository<User>, IDisposable, IUserRepository
     {
-
 
         public User getUserByName(string name)
         {

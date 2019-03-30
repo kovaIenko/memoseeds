@@ -23,23 +23,8 @@ namespace memoseeds.Controllers
 
         public AccountController(ApplicationDbContext context, IConfiguration config)
         {
-             db = context;
+            db = context;
             _config = config;
-        }
-
-        [AllowAnonymous]
-        [HttpGet("/login")]
-        public JsonResult Log()
-        {
-            //db.Users.Add(new User()
-            //{
-            //    Username = "kovalenko",
-            //    Email = "ruskov@gmail.com",
-            //    Password="qwerty123",
-            //    Credits = 5000
-            //});
-
-            return Json("hello");
         }
 
         // POST:

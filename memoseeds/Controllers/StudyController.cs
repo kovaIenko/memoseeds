@@ -22,7 +22,7 @@ namespace memoseeds.Controllers
 
 
         [HttpPost("api/getModulesOfUser")]
-        public JsonResult getModulesOfUser([FromBody] long id)
+        public JsonResult GetModulesOfUser([FromBody] long id)
         {
             
             User user = UserRepository.GetById(id);
@@ -34,13 +34,13 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("api/getUsers")]
-        public JsonResult getUs()
+        public JsonResult GetUs()
         {
             return Json(UserRepository.getAllUsers());
         }
 
         [HttpPost("api/getModule")]
-        public JsonResult getModule([FromBody]long id)
+        public JsonResult GetModule([FromBody]long id)
         {
             Module m = ModuleRepository.GetById(id);
             return Json(m);
@@ -49,7 +49,7 @@ namespace memoseeds.Controllers
 
         //TODO
         [HttpPost("api/updateUser")]
-        public void updateUser([FromBody] Info user)
+        public void UpdateUser([FromBody] Info user)
         {
 
         }

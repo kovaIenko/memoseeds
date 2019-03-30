@@ -20,7 +20,6 @@ namespace memoseeds.Repositories
             this.context = context;
         }
 
-
         public void Dispose()
         {
             Dispose(true);
@@ -41,7 +40,8 @@ namespace memoseeds.Repositories
 
         public Module GetById(long id)
         {
-            return context.Modules.Find(id);
+            /* треба протестувати*/
+            return context.Modules.Include(g => g.Terms).First();
         }
 
         public ICollection<Module> GetPublicModules()

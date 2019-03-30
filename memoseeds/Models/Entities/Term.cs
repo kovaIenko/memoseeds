@@ -17,6 +17,7 @@ namespace memoseeds.Models.Entities
 
         [Column("module")]
         public long? ModuleId { get; set; }
+        [JsonIgnore]
         public Module Module { get; set; }
 
         [Column("definition")]
