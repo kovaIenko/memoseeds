@@ -16,6 +16,10 @@ using memoseeds.Services;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
 using memoseeds.Models.Entities;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Buffers;
 
 namespace memoseeds
 {
@@ -24,6 +28,7 @@ namespace memoseeds
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -33,7 +38,7 @@ namespace memoseeds
         {
 
             services.AddDbContext<Database.ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")).ConfigureWarnings(warnings => warnings.Throw(CoreEventId.IncludeIgnoredWarning))
            );
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -65,7 +70,9 @@ namespace memoseeds
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             // services.Add<IRepository, SubjectRepository>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+        options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
 
         }
 
@@ -90,6 +97,7 @@ namespace memoseeds
 
             app.UseMvc(routes =>
             {
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

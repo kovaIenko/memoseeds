@@ -14,11 +14,11 @@ namespace memoseeds.Models.Entities
         public long CollectorId { get; set;  }
 
         [Column("term")]
-        public long TermId { get; set; }
+        public long?TermId { get; set; }
         public Term Term { get; set; }
 
         [Column("user")]
-        public long UserId { get; set; }
+        public long?UserId { get; set; }
         public User User { get; set; }
 
         public virtual ICollection<Completion> Completions { get; set; }

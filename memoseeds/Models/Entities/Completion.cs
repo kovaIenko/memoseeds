@@ -13,11 +13,11 @@ namespace memoseeds.Models.Entities
         public long CompletionId { get; set; }
 
         [Column("collector")]
-        public int CollectorId { get; set; }
+        public long? CollectorId { get; set; }
         public Collector Collector { get; set; }
 
         [Column("type")]
-        public int TypeId { get; set; }
+        public long? TypeId { get; set; }
         public Type Type { get; set; }
 
         [Required]

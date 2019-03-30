@@ -13,11 +13,11 @@ namespace memoseeds.Models.Entities
         public long AquiredModulesId { get; set; }
 
         [Column("user")]
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
         public User User { get; set; }
 
         [Column("module")]
-        public long ModuleId { get; set; }
+        public long? ModuleId { get; set; }
         public Module Module { get; set; }
 
     }

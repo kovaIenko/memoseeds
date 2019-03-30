@@ -1,11 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories.Purchase;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Data.Entity;
-
 
 namespace memoseeds.Repositories
 {
@@ -46,8 +46,7 @@ namespace memoseeds.Repositories
 
         public ICollection<Module> GetPublicModules()
         {
-            ICollection<Module> modules = context.Modules.Include(n=>n.Terms).Where(m=>!m.IsLocal).ToList<Module>();
-
+            ICollection<Module> modules = context.Modules.Include(n => n.Terms).ToList();
             return modules;
         }
 
@@ -63,7 +62,7 @@ namespace memoseeds.Repositories
 
         public void Update(Module entity)
         {
-            context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.Entry(entity).State = EntityState.Modified;
         }
 
         public void Delete(long Id)
@@ -71,5 +70,7 @@ namespace memoseeds.Repositories
             Module entity = context.Modules.Find(Id);
             context.Modules.Remove(entity);
         }
+
+    
     }
 }
