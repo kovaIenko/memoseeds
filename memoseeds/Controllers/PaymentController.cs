@@ -23,7 +23,7 @@ namespace memoseeds.Controllers
         {
             string configJSON = null;
             string dataJSON = null;
-            string purchaseRepoPath = System.Environment.CurrentDirectory;
+            string purchaseRepoPath = Environment.CurrentDirectory;
             using (
                 StreamReader
                 configFile = new StreamReader(purchaseRepoPath + "\\Repositories\\Purchase\\config.json"),
@@ -71,6 +71,12 @@ namespace memoseeds.Controllers
             return null;
         }
 
+        private ApplicationDbContext dbContext = null;
+        public PaymentController(ApplicationDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
+
         [HttpPost("options")]
         public ActionResult provideOptions(UserInfo info)
         {
@@ -92,7 +98,7 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("checkout")]
-        public ActionResult tryCheckout(CheckoutInfo info, [FromServices] ApplicationDbContext dbContext)
+        public ActionResult tryCheckout(CheckoutInfo info)
         {
             string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
             PurchaseData purchase = findPurchaseData(PaymentController.countryToPurchases, id);
