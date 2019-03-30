@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
@@ -19,6 +20,19 @@ namespace memoseeds.Controllers
             this.UserRepository = UserRepository;
         }
 
+
+        [HttpPost("api/getModulesOfUser")]
+        public JsonResult getModulesOfUser([FromBody] long id)
+        {
+            
+            User user = UserRepository.GetById(id);
+            List<Module> res = new List<Module>();
+            foreach(AquiredModules x in user.Aquireds){
+                res.Add(x.Module);
+            }
+            return (Json(res));
+        }
+
         [HttpGet("api/getUsers")]
         public JsonResult getUs()
         {
@@ -32,21 +46,13 @@ namespace memoseeds.Controllers
             return Json(m);
         }
 
+
+        //TODO
         [HttpPost("api/updateUser")]
         public void updateUser([FromBody] Info user)
         {
-            var k = 1488; ;
 
         }
-
-
-
-
-
-        // TODO реалізувати API для фронтенду, узгодити із Сокуром,
-        // який розроблятиме відповідний сервіс на фронті. 
-        // Інформація передаватиметься за допомогою json
-
 
 
 
