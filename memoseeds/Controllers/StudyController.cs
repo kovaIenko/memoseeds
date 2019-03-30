@@ -10,46 +10,36 @@ namespace memoseeds.Controllers
     [ApiController]
     public class StudyController:  Controller
     {
-        private IModuleRepository moduleRepository;
-        private IUserRepository userRepository;
+        private IModuleRepository ModuleRepository;
+        private IUserRepository UserRepository;
 
-            public StudyController(IModuleRepository ModuleRepository, IUserRepository userRepository)
+            public StudyController(IModuleRepository ModuleRepository,IUserRepository UserRepository)
         {
-            this.moduleRepository = ModuleRepository;
-            this.userRepository = userRepository;
+            this.ModuleRepository = ModuleRepository;
+            this.UserRepository = UserRepository;
         }
 
         [HttpGet("api/getUsers")]
         public JsonResult getUs()
         {
-            return Json(userRepository.getAllUsers());
+            return Json(UserRepository.getAllUsers());
         }
 
         [HttpPost("api/getModule")]
         public JsonResult getModule([FromBody]long id)
         {
-            Module m = moduleRepository.GetById(id);
+            Module m = ModuleRepository.GetById(id);
             return Json(m);
         }
 
-        //[HttpPost("api/updateUser")]
-        //public void updateUser([FromBody] UserInfo user, ModuleInfo module)
-        //{
-        //    var k = 1488; ;
-
-        //}
-
-        private class ModuleInfo
+        [HttpPost("api/updateUser")]
+        public void updateUser([FromBody] Info user)
         {
-
-            public string n { get; set; }
+            var k = 1488; ;
 
         }
 
-        private class UserInfo
-        {
-            public string Username { get; set; }
-        }
+
 
 
 
@@ -63,6 +53,9 @@ namespace memoseeds.Controllers
 
     }
 
+    public class Info
+    {
+    }
 }
 
 

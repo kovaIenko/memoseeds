@@ -62,7 +62,7 @@ namespace memoseeds
             services.AddScoped<ITranslatorService, TranslatorService>();
             //services.AddScoped(typeof(IRepository<Subject>), typeof(SubjectRepository));
             services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));
-            services.AddScoped(typeof(IRepository<User>), typeof(UserRepository));
+            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             // services.Add<IRepository, SubjectRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
