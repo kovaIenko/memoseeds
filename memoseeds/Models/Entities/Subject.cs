@@ -9,8 +9,9 @@ namespace memoseeds.Models.Entities
     public class Subject
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int SubjectId { get; set;}
+        public long SubjectId { get; set;}
 
         [Required]
         [Index(IsUnique = true)]

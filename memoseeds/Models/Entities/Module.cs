@@ -9,12 +9,13 @@ namespace memoseeds.Models.Entities
     public class Module
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int ModuleId { get; set; }
+        public long ModuleId { get; set; }
 
         [Required]
         [Column("author")]
-        public int AuthorId { get; set;  }
+        public long AuthorId { get; set;  }
 
         [Required]
         [Column("is_free")]
@@ -28,9 +29,9 @@ namespace memoseeds.Models.Entities
         [Column("name")]
         public string Name { get; set; }
 
-        [Column("course")]
-        public int? CourseId { get; set; }
-        public Category Course { get; set; }
+        [Column("category")]
+        public long? CategoryId { get; set; }
+        public Category Category { get; set; }
 
         public virtual ICollection<Term> Terms { get; set; }
 

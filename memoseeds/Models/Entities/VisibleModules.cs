@@ -8,8 +8,9 @@ namespace memoseeds.Models.Entities
     public class VisibleModules
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int VisibleModulesId { get; set; }
+        public long VisibleModulesId { get; set; }
 
         [Column("user")]
         public int UserId { get; set; }

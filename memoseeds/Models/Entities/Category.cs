@@ -10,18 +10,19 @@ namespace memoseeds.Models.Entities
     public class Category
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int CategoryId { get; set; }
+        public long CategoryId { get; set; }
 
         [Column("subject")]
-        public int? SubjectId { get; set; }
+        public long? SubjectId { get; set; }
         public Subject Subject { get; set; }
 
         [Column("name")]
         public String Name { get; set; }
 
-        [Column("user")]
-        public int UserId { get; set; }
+        //[Column("user")]
+        //public long UserId { get; set; }
 
         public virtual ICollection<Module> Modules { get; set; }
 

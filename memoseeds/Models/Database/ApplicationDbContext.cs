@@ -1,14 +1,16 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using memoseeds.Models.Entities;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using System.Linq;
 
 namespace memoseeds.Database
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext 
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Subject> Subjects { get; set; }

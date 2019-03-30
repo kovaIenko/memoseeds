@@ -8,15 +8,16 @@ namespace memoseeds.Models.Entities
     public class AquiredModules
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int AquiredModulesId { get; set; }
+        public long AquiredModulesId { get; set; }
 
         [Column("user")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         public User User { get; set; }
 
         [Column("module")]
-        public int ModuleId { get; set; }
+        public long ModuleId { get; set; }
         public Module Module { get; set; }
 
     }

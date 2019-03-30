@@ -8,8 +8,9 @@ namespace memoseeds.Models.Entities
     public class Completion
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int CompletionId { get; set; }
+        public long CompletionId { get; set; }
 
         [Column("collector")]
         public int CollectorId { get; set; }

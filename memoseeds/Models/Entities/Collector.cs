@@ -5,19 +5,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace memoseeds.Models.Entities
 {
-    [Table("collector")]
+    [Table("collectors")]
     public class Collector
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int CollectorId { get; set;  }
+        public long CollectorId { get; set;  }
 
         [Column("term")]
-        public int TermId { get; set; }
+        public long TermId { get; set; }
         public Term Term { get; set; }
 
         [Column("user")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
         public User User { get; set; }
 
         public virtual ICollection<Completion> Completions { get; set; }

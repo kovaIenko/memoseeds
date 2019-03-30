@@ -7,14 +7,15 @@ namespace memoseeds.Models.Entities
     public class Term
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int TermId { get; set;  }
+        public long TermId { get; set;  }
 
-        [Column("type")]
+        [Column("name")]
         public string Name { get; set; }
 
         [Column("module")]
-        public int? ModuleId { get; set; }
+        public long? ModuleId { get; set; }
         public Module Module { get; set; }
 
         [Column("definition")]

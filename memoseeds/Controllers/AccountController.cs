@@ -29,18 +29,18 @@ namespace memoseeds.Controllers
 
         [AllowAnonymous]
         [HttpGet("/login")]
-        public void log()
+        public JsonResult log()
         {
-            db.Users.Add(new User()
-            {
-                Username = "kovalenko",
-                Email = "ruskov@gmail.com",
-                Password="qwerty123",
-                Credits = 5000
+            //db.Users.Add(new User()
+            //{
+            //    Username = "kovalenko",
+            //    Email = "ruskov@gmail.com",
+            //    Password="qwerty123",
+            //    Credits = 5000
 
 
-            });
-            db.SaveChanges();
+            //});
+            return Json("hello");
         }
 
         // POST:

@@ -12,7 +12,7 @@ namespace memoseeds.Models.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
         [Required]
         [Index(IsUnique = true)]

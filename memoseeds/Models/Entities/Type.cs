@@ -9,11 +9,11 @@ namespace memoseeds.Models.Entities
     public class Type
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("id")]
-        public int TypeId { get; set;  }
+        public long TypeId { get; set;  }
 
         [Column("type")]
-       
         public TypeOfStudy Name { get; set; }
 
         public virtual ICollection<Collector> Collectors { get; set; }

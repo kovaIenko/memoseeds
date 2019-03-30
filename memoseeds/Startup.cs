@@ -13,6 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using memoseeds.Services;
+using memoseeds.Repositories;
+using memoseeds.Repositories.Purchase;
+using memoseeds.Models.Entities;
 
 namespace memoseeds
 {
@@ -55,9 +58,16 @@ namespace memoseeds
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+         
             services.AddScoped<ITranslatorService, TranslatorService>();
+            //services.AddScoped(typeof(IRepository<Subject>), typeof(SubjectRepository));
+            services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));
+
+            // services.Add<IRepository, SubjectRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
