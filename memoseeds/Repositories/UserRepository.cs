@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace memoseeds.Repositories
 {
-    public class UserRepository : IRepository<User>, IDisposable
+    public class UserRepository : IRepository<User>, IDisposable, IUserRepository
     {
 
 
@@ -63,7 +67,11 @@ namespace memoseeds.Repositories
             this.disposed = true;
         }
 
+        public ICollection<User> getAllUsers()
+        {
+            ICollection<User> res = context.Users.ToList();
+            return res;
+        }
 
-
-}
+    }
 }

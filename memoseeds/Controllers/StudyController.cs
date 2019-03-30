@@ -1,6 +1,7 @@
 ﻿using System;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
+using memoseeds.Repositories.Purchase;
 using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
@@ -9,19 +10,19 @@ namespace memoseeds.Controllers
     [ApiController]
     public class StudyController:  Controller
     {
-        private ModuleRepository moduleRepository;
-        private UserRepository userRepository;
+        private IModuleRepository moduleRepository;
+        private IUserRepository userRepository;
 
-            public StudyController(ModuleRepository ModuleRepository, UserRepository userRepository)
+            public StudyController(IModuleRepository ModuleRepository, IUserRepository userRepository)
         {
             this.moduleRepository = ModuleRepository;
             this.userRepository = userRepository;
         }
 
-        [HttpGet("api/getUser")]
+        [HttpGet("api/getUsers")]
         public JsonResult getUs()
         {
-            return Json(userRepository.getUserByName("kovalenko"));
+            return Json(userRepository.getAllUsers());
         }
 
         [HttpPost("api/getModule")]
@@ -31,33 +32,38 @@ namespace memoseeds.Controllers
             return Json(m);
         }
 
-        [HttpPost("api/updateUser")]
-        public void updateUser([FromBody] UserInfo user, ModuleInfo module)
+        //[HttpPost("api/updateUser")]
+        //public void updateUser([FromBody] UserInfo user, ModuleInfo module)
+        //{
+        //    var k = 1488; ;
+
+        //}
+
+        private class ModuleInfo
         {
+
+            public string n { get; set; }
 
         }
 
+        private class UserInfo
+        {
+            public string Username { get; set; }
+        }
 
 
 
         // TODO реалізувати API для фронтенду, узгодити із Сокуром,
         // який розроблятиме відповідний сервіс на фронті. 
         // Інформація передаватиметься за допомогою json
-    }
 
-    public class ModuleInfo
-    {
+
 
 
 
     }
-
-    public class UserInfo
-    {
-        internal object country;
-
-        public string Username { get; set; }
-    }
-
 
 }
+
+
+
