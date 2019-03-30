@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stripe;
 using System;
+using memoseeds.Database;
 
 namespace memoseeds.Controllers
 {
@@ -91,7 +92,7 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("checkout")]
-        public ActionResult tryCheckout(CheckoutInfo info)
+        public ActionResult tryCheckout(CheckoutInfo info, [FromServices] ApplicationDbContext dbContext)
         {
             string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
             PurchaseData purchase = findPurchaseData(PaymentController.countryToPurchases, id);
@@ -113,8 +114,16 @@ namespace memoseeds.Controllers
                     CustomerId = customer.Id
                 });
 
-                string chargeString = JsonConvert.SerializeObject(charge);
-                res = new ContentResult { Content = chargeString, ContentType = "application/json" };
+                if(charge != null)
+                {
+                    if (charge.Paid)
+                    {
+                        //add credits to db user here
+                    }
+
+                    string chargeString = JsonConvert.SerializeObject(charge);
+                    res = new ContentResult { Content = chargeString, ContentType = "application/json" };
+                }
 
             } catch(Exception e)
             {
