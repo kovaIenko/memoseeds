@@ -1,4 +1,4 @@
-﻿using memoseeds.Repositories.Purchase.DataConfig;
+using memoseeds.Repositories.Purchase.DataConfig;
 using memoseeds.Repositories.Purchase.Requests;
 
 using System.Collections.Generic;
@@ -23,10 +23,12 @@ namespace memoseeds.Controllers
         {
             string configJSON = null;
             string dataJSON = null;
+
             string purchaseRepoPath = Environment.CurrentDirectory;
             char pathDirSep = Path.DirectorySeparatorChar;
             string configPath = String.Format("{0}Repositories{0}Purchase{0}config.json", pathDirSep);
             string dataPath = String.Format("{0}Repositories{0}Purchase{0}data.json", pathDirSep);
+
             using (
                 StreamReader
                 configFile = new StreamReader(purchaseRepoPath + configPath),
@@ -35,6 +37,7 @@ namespace memoseeds.Controllers
                 configJSON = configFile.ReadToEnd();
                 dataJSON = dataFile.ReadToEnd();
             }
+
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<PurchaseData>>>(dataJSON);
             setupIds(PaymentController.countryToPurchases);

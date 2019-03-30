@@ -37,9 +37,8 @@ namespace memoseeds.Controllers
             //    Email = "ruskov@gmail.com",
             //    Password="qwerty123",
             //    Credits = 5000
-
-
             //});
+
             return Json("hello");
         }
 
