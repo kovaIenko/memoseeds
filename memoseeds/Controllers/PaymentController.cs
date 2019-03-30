@@ -24,10 +24,13 @@ namespace memoseeds.Controllers
             string configJSON = null;
             string dataJSON = null;
             string purchaseRepoPath = Environment.CurrentDirectory;
+            char pathDirSep = Path.DirectorySeparatorChar;
+            string configPath = String.Format("{0}Repositories{0}Purchase{0}config.json", pathDirSep);
+            string dataPath = String.Format("{0}Repositories{0}Purchase{0}data.json", pathDirSep);
             using (
                 StreamReader
-                configFile = new StreamReader(purchaseRepoPath + "\\Repositories\\Purchase\\config.json"),
-                dataFile = new StreamReader(purchaseRepoPath + "\\Repositories\\Purchase\\data.json"))
+                configFile = new StreamReader(purchaseRepoPath + configPath),
+                dataFile = new StreamReader(purchaseRepoPath + dataPath))
             {
                 configJSON = configFile.ReadToEnd();
                 dataJSON = dataFile.ReadToEnd();
