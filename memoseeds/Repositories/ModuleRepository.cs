@@ -46,7 +46,7 @@ namespace memoseeds.Repositories
 
         public ICollection<Module> GetPublicModules()
         {
-            ICollection<Module> modules = context.Modules.Include(h=>h.Terms).ToList<Module>();
+            ICollection<Module> modules = context.Modules.Include(n=>n.Terms).Where(m=>!m.IsLocal).ToList<Module>();
 
             return modules;
         }
