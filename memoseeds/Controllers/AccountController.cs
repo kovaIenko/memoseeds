@@ -88,7 +88,7 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("/signup")]
-        public async Task<IActionResult> Register(UserRegisterData data)
+        public async Task<IActionResult> Register([FromBody]UserRegisterData data)
         {
             if (ModelState.IsValid)
             {

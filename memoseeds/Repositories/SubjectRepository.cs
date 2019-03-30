@@ -1,14 +1,15 @@
-﻿using System;
-using memoseeds.Database;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Data;
+using memoseeds.Database;
 using memoseeds.Models.Entities;
+using memoseeds.Repositories.Purchase;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace memoseeds.Repositories
 {
-    public class SubjectRepository : IRepository<Subject>, IDisposable
+    public class SubjectRepository : ISubjectRepository, IRepository<Subject>, IDisposable
     {
         private bool disposed = false;
         private ApplicationDbContext context;
@@ -60,6 +61,12 @@ namespace memoseeds.Repositories
         public Subject GetById(long id)
         {
             return context.Subjects.Find(id);
+        }
+
+        public ICollection<Subject> GetWithoutLocalModules()
+        {
+            ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).ThenInclude(r => r.Modules).ThenInclude(f => f.Terms).ToList();
+            return subjects;
         }
     }
 }

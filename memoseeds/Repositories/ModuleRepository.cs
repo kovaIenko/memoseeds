@@ -46,9 +46,10 @@ namespace memoseeds.Repositories
 
         public ICollection<Module> GetPublicModules()
         {
-            ICollection<Module> modules = context.Modules.Include(n => n.Terms).ToList();
+            ICollection<Module> modules = context.Modules.Include(e=>e.Category).Include(n => n.Terms).ToList();
             return modules;
         }
+
 
         public void Insert(Module entity)
         {

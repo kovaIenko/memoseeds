@@ -11,18 +11,22 @@ namespace memoseeds.Controllers
     public class AssetsController: Controller
     {
         private IModuleRepository ModuleRepository;
+        private ISubjectRepository SubjectRepository;
 
-        public AssetsController(IModuleRepository ModuleRepository)
+        public AssetsController(IModuleRepository ModuleRepository, ISubjectRepository SubjectRepository)
         {
             this.ModuleRepository = ModuleRepository;
+            this.SubjectRepository = SubjectRepository;
         }
 
-        [HttpGet("public/modules")]
-        public JsonResult GetAllPublicModules()
+        [HttpGet("shop/subjects/categories/modules")]
+        public JsonResult GetWithoutLocalModules()
         {
-            ICollection<Module> modules = ModuleRepository.GetPublicModules();
-            return Json(modules);
+            ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModules();
+            return Json(subjects);
         }
+
+
 
     }
 }
