@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
+using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,12 +19,13 @@ namespace memoseeds.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-        private ApplicationDbContext db;
+        private IUserRepository UserRepository;        
         private IConfiguration _config;
 
-        public AccountController(ApplicationDbContext context, IConfiguration config)
+
+        public AccountController(IUserRepository UserRepositor, IConfiguration config)
         {
-            db = context;
+            UserRepository = UserRepositor;
             _config = config;
         }
 
@@ -33,11 +35,22 @@ namespace memoseeds.Controllers
         public async Task<IActionResult> Login([FromBody]UserAuthenticateData login)
         {
             IActionResult response = Unauthorized();
-            var user = await AuthenticateUserAsync(login);
+            User user = UserRepository.GetUserByName(login.Username);
             if (user != null)
             {
-                var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new { token = tokenString, info = user});
+                if (user.Password.Equals(login.Password))
+                {
+                    var tokenString = GenerateJSONWebToken(user);
+                    response = Ok(new { token = tokenString, info = user });
+                }
+                else
+                {
+                    response = Ok(new { Error = "Incorrect password." });
+                }
+            }
+            else
+            {
+                response = Ok(new { Error = "User with that usarname not found" });
             }
             return response;
         }
@@ -63,24 +76,16 @@ namespace memoseeds.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<User> AuthenticateUserAsync(UserAuthenticateData data)
-        {
-            User user = await db.Users.FirstOrDefaultAsync(
-            u => u.Username == data.Username &&
-                 u.Password == data.Password
-            );
-            return user;
-        }
-
         [HttpPost("/signup")]
         public async Task<IActionResult> Register([FromBody]UserRegisterData data)
         {
-            if (ModelState.IsValid)
-            {
-                User user = await db.Users.FirstOrDefaultAsync(u => 
-                    u.Username == data.Username ||
-                    u.Email == data.Email
-                    );
+            IActionResult response = Unauthorized();
+                User user = UserRepository.GetUserByEmail(data.Email);
+                if (user != null)
+                    response = Ok(new { Error = "This email is already taken." });
+                user = UserRepository.GetUserByName(data.Username);
+                if (user != null)
+                    response = Ok(new { Error = "This username is already taken." });
                 if (user == null)
                 {
                     // adding user to db
@@ -90,14 +95,10 @@ namespace memoseeds.Controllers
                         Email = data.Email,
                         Password = data.Password
                     };
-                    db.Users.Add(user);
-                    await db.SaveChangesAsync();
-                    return Ok(new { token = GenerateJSONWebToken(user) });
+                    UserRepository.Insert(user);
+                    response = Ok(new { token = GenerateJSONWebToken(user) });
                 }
-                else
-                    ModelState.AddModelError("ErrorStack", "This login or email is already taken");
-            }
-            return BadRequest(ModelState);
+            return response;
         }
 
         public class UserAuthenticateData

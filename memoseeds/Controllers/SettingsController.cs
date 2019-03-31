@@ -24,7 +24,7 @@ namespace memoseeds.Controllers
             if (ModelState.IsValid)
             {
                 if (UserRepository.GetUserByEmail(data.New) != null)
-                    return Ok(new { Error = "This email is alredy taken" });
+                    return Ok(new { Error = "This email is alredy taken, please re-login" });
 
                 User entity = UserRepository.GetById(id);
                 if (entity != null)
@@ -45,7 +45,7 @@ namespace memoseeds.Controllers
                     }
                     else
                     {
-                        response = Ok(new { Error = "This id has another email, please re-login" });
+                        response = Ok(new { Error = "This id has another email." });
                     }
                     }
                 else
