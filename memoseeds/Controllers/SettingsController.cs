@@ -29,7 +29,8 @@ namespace memoseeds.Controllers
                     if(entity.Email.Equals(data.Old))
                           entity.Email = data.New;
                     User updated = UserRepository.Update(entity);
-                    response = Ok( new { UpdatedUser = updated });
+                    int count = UserRepository.NumbOfModules(entity.UserId);
+                    response = Ok( new { UpdatedUser = updated, CountOfModules =count});
                 }
             }
             return response;
@@ -48,7 +49,8 @@ namespace memoseeds.Controllers
                     if (entity.Password.Equals(data.Old))
                         entity.Password = data.New;
                     User updated = UserRepository.Update(entity);
-                    response = Ok(new { UpdatedUser = updated });
+                    int count = UserRepository.NumbOfModules(entity.UserId);
+                    response = Ok(new { UpdatedUser = updated, CountOfModules = count }); response = Ok(new { UpdatedUser = updated });
                 }
             }
             return response;
@@ -66,7 +68,8 @@ namespace memoseeds.Controllers
                     if (entity.Username.Equals(data.Old))
                         entity.Username = data.New;
                     User updated = UserRepository.Update(entity);
-                    response = Ok(new { UpdatedUser = updated });
+                    int count = UserRepository.NumbOfModules(entity.UserId);
+                    response = Ok(new { UpdatedUser = updated, CountOfModules = count });
                 }
             }
             return response;

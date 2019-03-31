@@ -77,9 +77,13 @@ namespace memoseeds.Repositories
 
         public ICollection<AquiredModules> GetModulesByUser(long id)
         {
-
-            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).ToList();
+            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).Where(g=>g.UserId==id).ToList();
             return modules;
+        }
+
+        public int NumbOfModules(long id)
+        {
+            return context.AquiredModules.Where(f => f.UserId == id).Count();
         }
     }
 }
