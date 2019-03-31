@@ -1,16 +1,17 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace memoseeds.Repositories
 {
     public class UserRepository : IRepository<User>, IDisposable, IUserRepository
     {
 
-        public User getUserByName(string name)
+        public User GetUserByName(string name)
         {
             return context.Users.Find(name);
         }
@@ -68,11 +69,17 @@ namespace memoseeds.Repositories
             this.disposed = true;
         }
 
-        public ICollection<User> getAllUsers()
+        public ICollection<User> GetAllUsers()
         {
             ICollection<User> res = context.Users.ToList();
             return res;
         }
 
+        public ICollection<AquiredModules> GetModulesByUser(long id)
+        {
+
+            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).ToList();
+            return modules;
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace memoseeds.Database
         public DbSet<Category> Courses { get; set; }
         public DbSet<Completion> Completions { get; set; }
         public DbSet<Collector> Collectors { get; set; }
+        public DbSet<AquiredModules> AquiredModules { get; set; }
     }
 }
 

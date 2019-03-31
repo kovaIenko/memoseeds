@@ -6,10 +6,7 @@ namespace memoseeds.Repositories
 {
     public interface IUserRepository: IRepository<User>
     {
-
-         User getUserByName(string name);
-
-
-
+        User GetUserByName(string name);
+        ICollection<AquiredModules> GetModulesByUser(long id);
     }
 }
