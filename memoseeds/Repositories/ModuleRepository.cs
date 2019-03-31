@@ -61,9 +61,12 @@ namespace memoseeds.Repositories
             context.SaveChanges();
         }
 
-        public void Update(Module entity)
+        public Module Update(Module entity)
         {
             context.Entry(entity).State = EntityState.Modified;
+            Save();
+            Module updated = context.Modules.Find(entity.ModuleId);
+            return updated;
         }
 
         public void Delete(long Id)
@@ -72,6 +75,5 @@ namespace memoseeds.Repositories
             context.Modules.Remove(entity);
         }
 
-    
     }
 }

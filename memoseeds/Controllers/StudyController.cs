@@ -33,12 +33,6 @@ namespace memoseeds.Controllers
             return (Json(res));
         }
 
-        [HttpGet("api/getUsers")]
-        public JsonResult GetUs()
-        {
-            return Json(UserRepository.getAllUsers());
-        }
-
         [HttpPost("api/getModule")]
         public JsonResult GetModule([FromBody]long id)
         {

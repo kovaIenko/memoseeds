@@ -9,7 +9,6 @@ namespace memoseeds.Repositories
 
          User getUserByName(string name);
 
-         ICollection<User> getAllUsers();
 
 
     }

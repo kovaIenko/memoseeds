@@ -53,9 +53,13 @@ namespace memoseeds.Repositories
             context.SaveChanges();
         }
 
-        public void Update(Subject entity)
+        public Subject Update(Subject entity)
         {
             context.Entry(entity).State = EntityState.Modified;
+            Save();
+            Subject update = context.Subjects.Find(entity.SubjectId);
+            return update;
+
         }
 
         public Subject GetById(long id)

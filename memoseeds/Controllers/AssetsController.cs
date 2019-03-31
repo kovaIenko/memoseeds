@@ -26,7 +26,5 @@ namespace memoseeds.Controllers
             return Json(subjects);
         }
 
-
-
     }
 }

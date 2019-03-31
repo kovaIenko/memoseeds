@@ -43,9 +43,12 @@ namespace memoseeds.Repositories
             context.SaveChanges();
         }
 
-        public void Update(User entity)
+        public User Update(User entity)
         {
             context.Users.Update(entity);
+            Save();
+            User update = context.Users.Find(entity.UserId);
+            return update;
         }
 
         public void Dispose()
