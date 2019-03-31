@@ -20,8 +20,8 @@ namespace memoseeds.Models.Entities
         public User User { get; set; }
 
         [Required]
-        [Column("is_free")]
-        public Boolean IsFree { get; set; }
+        [Column("price")]
+        public int Price { get; set; }
 
         [Required]
         [Column("is_local")]
