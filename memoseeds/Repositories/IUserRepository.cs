@@ -9,5 +9,6 @@ namespace memoseeds.Repositories
         User GetUserByName(string name);
         ICollection<AquiredModules> GetModulesByUser(long id);
         int NumbOfModules(long id);
+        object GetUserByEmail(string @new);
     }
 }

@@ -23,15 +23,35 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             if (ModelState.IsValid)
             {
+                if (UserRepository.GetUserByEmail(data.New) != null)
+                    return Ok(new { Error = "This email is alredy taken" });
+
                 User entity = UserRepository.GetById(id);
                 if (entity != null)
                 {
-                    if(entity.Email.Equals(data.Old))
-                          entity.Email = data.New;
-                    User updated = UserRepository.Update(entity);
-                    int count = UserRepository.NumbOfModules(entity.UserId);
-                    response = Ok( new { UpdatedUser = updated, CountOfModules =count});
-                }
+                    if (entity.Email.Equals(data.Old))
+                    {
+                        if (!data.Old.Equals(data.New))
+                        {
+                            entity.Email = data.New;
+                            User updated = UserRepository.Update(entity);
+                            int count = UserRepository.NumbOfModules(entity.UserId);
+                            response = Ok(new { UpdatedUser = updated, CountOfModules = count });
+                        }
+                        else
+                        {
+                            response = Ok(new { Error = "Equals Emails" });
+                        }
+                    }
+                    else
+                    {
+                        response = Ok(new { Error = "This id has another email" });
+                    }
+                    }
+                else
+                {
+                    response = Ok(new { Error = "Id not exist" });
+                    }
             }
             return response;
         }
@@ -47,10 +67,27 @@ namespace memoseeds.Controllers
                 if (entity != null)
                 {
                     if (entity.Password.Equals(data.Old))
-                        entity.Password = data.New;
-                    User updated = UserRepository.Update(entity);
-                    int count = UserRepository.NumbOfModules(entity.UserId);
-                    response = Ok(new { UpdatedUser = updated, CountOfModules = count }); response = Ok(new { UpdatedUser = updated });
+                    {
+                        if (!data.Old.Equals(data.New))
+                        {
+                            entity.Password = data.New;
+                            User updated = UserRepository.Update(entity);
+                            int count = UserRepository.NumbOfModules(entity.UserId);
+                            response = Ok(new { UpdatedUser = updated, CountOfModules = count });
+                        }
+                        else
+                        {
+                            response = Ok(new { Error = "Equals Passwords" });
+                        }
+                    }
+                    else
+                    {
+                        response = Ok(new { Error = "This id has another password" });
+                    }
+                }
+                else
+                {
+                    response = Ok(new { Error = "Id not exist" });
                 }
             }
             return response;
@@ -62,14 +99,33 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             if (ModelState.IsValid)
             {
+                if (UserRepository.GetUserByName(data.New) != null)
+                    return Ok(new { Error = "This username is alredy taken" });
                 User entity = UserRepository.GetById(id);
                 if (entity != null)
                 {
                     if (entity.Username.Equals(data.Old))
-                        entity.Username = data.New;
-                    User updated = UserRepository.Update(entity);
-                    int count = UserRepository.NumbOfModules(entity.UserId);
-                    response = Ok(new { UpdatedUser = updated, CountOfModules = count });
+                    {
+                        if (!data.Old.Equals(data.New))
+                        {
+                            entity.Username = data.New;
+                            User updated = UserRepository.Update(entity);
+                            int count = UserRepository.NumbOfModules(entity.UserId);
+                            response = Ok(new { UpdatedUser = updated, CountOfModules = count });
+                        }
+                        else
+                        {
+                            response = Ok(new { Error = "Equals names" });
+                        }
+                    }
+                    else
+                    {
+                        response = Ok(new { Error = "This id has another username" });
+                    }
+                }
+                else
+                {
+                    response = Ok(new { Error = "Id not exist" });
                 }
             }
             return response;

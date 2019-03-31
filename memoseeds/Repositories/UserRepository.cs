@@ -13,7 +13,12 @@ namespace memoseeds.Repositories
 
         public User GetUserByName(string name)
         {
-            return context.Users.Find(name);
+            return context.Users.Where(h => h.Username.Equals(name)).First();
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            return context.Users.Where(h => h.Email.Equals(email)).First();
         }
 
         private bool disposed = false;
