@@ -67,9 +67,9 @@ namespace memoseeds.Repositories
             return context.Subjects.Find(id);
         }
 
-        public ICollection<Subject> GetWithoutLocalModules()
+        public List<Subject> GetWithoutLocalModules()
         {
-            ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).
+            List<Subject> subjects = context.Subjects.Include(d => d.Categories).
             ThenInclude(r => r.Modules)
                 .ThenInclude(f => f.Terms).ToList();
             return subjects;

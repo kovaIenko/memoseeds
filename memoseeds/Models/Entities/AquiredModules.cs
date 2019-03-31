@@ -25,6 +25,7 @@ namespace memoseeds.Models.Entities
         public Module Module { get; set; }
 
         [Column("last_edit")]
+        [DataType(DataType.Date)]
         public DateTime LastEdit { get; set; }
 
     }

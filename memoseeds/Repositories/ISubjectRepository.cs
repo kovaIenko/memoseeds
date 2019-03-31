@@ -7,6 +7,6 @@ namespace memoseeds.Repositories
     public interface ISubjectRepository : IDisposable
     {
 
-        ICollection<Subject> GetWithoutLocalModules();
+        List<Subject> GetWithoutLocalModules();
     }
 }

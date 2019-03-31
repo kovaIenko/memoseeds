@@ -33,7 +33,7 @@ namespace memoseeds.Controllers
         {
             IActionResult response = Unauthorized();
             User user;
-            if (login.isUsername)
+            if (login.IsUsername)
             {
                 user = UserRepository.GetUserByName(login.Username);
             }
@@ -111,7 +111,7 @@ namespace memoseeds.Controllers
             public string Username { get; set; }
 
             [Required(ErrorMessage = "Bool not specified")]
-            public bool isUsername { get; set; }
+            public bool IsUsername { get; set; }
 
             [Required(ErrorMessage = "Password not specified")]
             [DataType(DataType.Password)]
