@@ -100,7 +100,7 @@ namespace memoseeds.Controllers
                         Password = data.Password
                     };
                     UserRepository.Insert(user);
-                    response = Ok(new { token = GenerateJSONWebToken(user) , user = user});
+                    response = Ok(new { token = GenerateJSONWebToken(user) , info = user});
                 }
             return response;
         }
