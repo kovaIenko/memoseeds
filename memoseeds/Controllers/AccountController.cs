@@ -1,16 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using memoseeds.Database;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -35,7 +32,14 @@ namespace memoseeds.Controllers
         public async Task<IActionResult> Login([FromBody]UserAuthenticateData login)
         {
             IActionResult response = Unauthorized();
-            User user = UserRepository.GetUserByName(login.Username);
+            User user;
+            if (login.isUsername)
+            {
+                user = UserRepository.GetUserByName(login.Username);
+            }
+            else{
+                user = UserRepository.GetUserByEmail(login.Username);
+            }
             if (user != null)
             {
                 if (user.Password.Equals(login.Password))
@@ -50,7 +54,7 @@ namespace memoseeds.Controllers
             }
             else
             {
-                response = Ok(new { Error = "User with that usarname not found" });
+                response = Ok(new { Error = "User with that username not found" });
             }
             return response;
         }
@@ -105,6 +109,9 @@ namespace memoseeds.Controllers
         {
             [Required(ErrorMessage = "Username not specified")]
             public string Username { get; set; }
+
+            [Required(ErrorMessage = "Bool not specified")]
+            public bool isUsername { get; set; }
 
             [Required(ErrorMessage = "Password not specified")]
             [DataType(DataType.Password)]
