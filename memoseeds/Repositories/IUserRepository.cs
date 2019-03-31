@@ -4,11 +4,11 @@ using memoseeds.Models.Entities;
 
 namespace memoseeds.Repositories
 {
-    public interface IUserRepository: IRepository<User>
+    public interface IUserRepository : IRepository<User>
     {
         User GetUserByName(string name);
         ICollection<AquiredModules> GetModulesByUser(long id);
         int NumbOfModules(long id);
-        object GetUserByEmail(string @new);
+        User GetUserByEmail(string email);
     }
 }

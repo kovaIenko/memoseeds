@@ -40,12 +40,12 @@ namespace memoseeds.Controllers
                         }
                         else
                         {
-                            response = Ok(new { Error = "Equals Emails" });
+                            response = Ok(new { Error = "Equal Emails" });
                         }
                     }
                     else
                     {
-                        response = Ok(new { Error = "This id has another email" });
+                        response = Ok(new { Error = "This id has another email, please re-login" });
                     }
                     }
                 else
@@ -77,17 +77,17 @@ namespace memoseeds.Controllers
                         }
                         else
                         {
-                            response = Ok(new { Error = "Equals Passwords" });
+                            response = Ok(new { Error = "Equals Passwords." });
                         }
                     }
                     else
                     {
-                        response = Ok(new { Error = "This id has another password" });
+                        response = Ok(new { Error = "This id has another password." });
                     }
                 }
                 else
                 {
-                    response = Ok(new { Error = "Id not exist" });
+                    response = Ok(new { Error = "Id not exist." });
                 }
             }
             return response;
@@ -100,7 +100,7 @@ namespace memoseeds.Controllers
             if (ModelState.IsValid)
             {
                 if (UserRepository.GetUserByName(data.New) != null)
-                    return Ok(new { Error = "This username is alredy taken" });
+                    return Ok(new { Error = "This username is alredy taken." });
                 User entity = UserRepository.GetById(id);
                 if (entity != null)
                 {
@@ -115,17 +115,17 @@ namespace memoseeds.Controllers
                         }
                         else
                         {
-                            response = Ok(new { Error = "Equals names" });
+                            response = Ok(new { Error = "Equals names." });
                         }
                     }
                     else
                     {
-                        response = Ok(new { Error = "This id has another username" });
+                        response = Ok(new { Error = "This id has another username." });
                     }
                 }
                 else
                 {
-                    response = Ok(new { Error = "Id not exist" });
+                    response = Ok(new { Error = "Id not exist." });
                 }
             }
             return response;
