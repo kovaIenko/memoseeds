@@ -86,6 +86,13 @@ namespace memoseeds.Repositories
             return modules;
         }
 
+
+        public Module GetModuleWithTerms(long userId, long moduleId)
+        {
+            AquiredModules aquiredModule = context.AquiredModules.Include(r=>r.Module).ThenInclude(y=>y.Terms).Where(q => q.ModuleId == moduleId).FirstOrDefault(g => g.UserId == userId);
+            return aquiredModule.Module;
+        }
+
         public int NumbOfModules(long id)
         {
             return context.AquiredModules.Where(f => f.UserId == id).Count();

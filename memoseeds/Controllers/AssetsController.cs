@@ -35,5 +35,12 @@ namespace memoseeds.Controllers
             return Json(modules);
         }
 
+        [HttpGet("user/{userid}/modules/{moduleid}")]
+        public JsonResult GetModules([FromRoute] long userid, [FromRoute] long moduleid)
+        {
+            Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
+            return Json(module);
+        }
+
     }
 }

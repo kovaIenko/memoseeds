@@ -10,5 +10,6 @@ namespace memoseeds.Repositories
         ICollection<AquiredModules> GetModulesByUser(long id);
         int NumbOfModules(long id);
         User GetUserByEmail(string email);
+        Module GetModuleWithTerms(long userId, long moduleId);
     }
 }
