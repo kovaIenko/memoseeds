@@ -26,68 +26,82 @@ namespace memoseeds.Controllers
         [HttpPost("/shop/filter")]
         public JsonResult FilterCase([FromBody] Filter cases)
         {
+            string _default = "default";
             ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModules();
             ICollection<Subject> result = new List<Subject>();
-            if (!cases.Subject.Equals("default"))
-            {
-                Subject subject = null;
-                foreach (Subject f in subjects)
-                    if (f.Name.Equals(cases.Subject))
-                    {
-                        subject = f;
-                        break;
-                    }
-
-                 if (!cases.Category.Equals("default"))
-                {
-                    ICollection<Category> categories = subject.Categories;
-                    ICollection<Category> temp = new List<Category>();
-                    foreach (Category c in categories)
-                    {
-                        if (c.Name.Equals(cases.Category))
-                            temp.Add(c);
-                    }
-                    subject.Categories = temp;
-                   
-                }
-                result.Add(subject);
+            if (!cases.Subject.Equals(_default))
+            {             
+                result.Add(ChooseSubject(subjects, cases.Subject, cases.Category, _default));
                 subjects = result;
-
             }
-
             if (cases.IsFree)
-            {
-                result = new List<Subject>();
-                foreach(Subject s in subjects)
-                {
-                    ICollection<Category> categories = s.Categories;
-                    ICollection<Category> tempCategory = new List<Category>();
-                    foreach ( Category c in categories)
-                    {
-                        ICollection<Module> modules = c.Modules;
-                        ICollection<Module> temp = new List<Module>();
-                        foreach ( Module m in modules)
-                        {
-                            if (m.Price == 0)
-                                temp.Add(m);
-                        }
-
-                        if (temp.Count != 0)
-                        {
-                            c.Modules = temp;
-                            tempCategory.Add(c);
-                        }
-                    }
-                    if(tempCategory.Count!=0)
-                    {
-                        s.Categories = tempCategory;
-                        result.Add(s);
-                    }
-                }
-                subjects = result;
-            }
+                subjects = CheckIsFree(subjects);
 
             return Json(subjects);
+        }
+
+
+        private Subject ChooseSubject(ICollection<Subject> subjects, string sub, string cat,string _default)
+        {
+            Subject subject = null;
+            foreach (Subject f in subjects)
+                if (f.Name.Equals(sub))
+                {
+                    subject = f;
+                    break;
+                }
+            if (!cat.Equals(_default))
+                subject = ChooseCategory(subject, cat);
+
+            return subject;
+        }
+
+        private Subject ChooseCategory(Subject subject, string category)
+        {
+            ICollection<Category> categories = subject.Categories;
+            ICollection<Category> temp = new List<Category>();
+            foreach (Category c in categories)
+            {
+                if (c.Name.Equals(category))
+                {
+                    temp.Add(c);
+                    break;
+                }
+            }
+             subject.Categories = temp;
+            return subject;
+        }
+
+        private ICollection<Subject> CheckIsFree(ICollection<Subject> subjects)
+        {
+           ICollection<Subject> result = new List<Subject>();
+            foreach (Subject s in subjects)
+            {
+                ICollection<Category> categories = s.Categories;
+                ICollection<Category> tempCategory = new List<Category>();
+                foreach (Category c in categories)
+                {
+                    ICollection<Module> modules = c.Modules;
+                    ICollection<Module> temp = new List<Module>();
+                    foreach (Module m in modules)
+                    {
+                        if (m.Price == 0)
+                            temp.Add(m);
+                    }
+
+                    if (temp.Count != 0)
+                    {
+                        c.Modules = temp;
+                        tempCategory.Add(c);
+                    }
+                }
+                if (tempCategory.Count != 0)
+                {
+                    s.Categories = tempCategory;
+                    result.Add(s);
+                }
+            }
+            return result;
         }
 
         public class Filter
