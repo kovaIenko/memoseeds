@@ -75,5 +75,10 @@ namespace memoseeds.Repositories
             context.Modules.Remove(entity);
         }
 
+        public Module GetModuleWithTerms(long moduleid)
+        {
+            Module module = context.Modules.Include(r => r.Terms).FirstOrDefault(g => g.ModuleId == moduleid);
+            return module;
+        }
     }
 }

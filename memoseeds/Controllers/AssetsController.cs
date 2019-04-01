@@ -36,9 +36,16 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("user/{userid}/modules/{moduleid}")]
-        public JsonResult GetModules([FromRoute] long userid, [FromRoute] long moduleid)
+        public JsonResult GetFullModuleByUser([FromRoute] long userid, [FromRoute] long moduleid)
         {
             Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
+            return Json(module);
+        }
+
+        [HttpGet("shop/modules/{moduleid}")]
+        public JsonResult GetFullModule([FromRoute] long moduleid)
+        {
+            Module module = ModuleRepository.GetModuleWithTerms(moduleid);
             return Json(module);
         }
 
