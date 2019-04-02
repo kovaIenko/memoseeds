@@ -8,6 +8,7 @@ namespace memoseeds.Repositories.Purchase
     {
         ICollection<Module> GetPublicModules();
         Module GetModuleWithTerms(long moduleid);
-    
+        ICollection<Module> GetWithoutLocalWithTerms();
+        ICollection<Module> GetModulesBySubString(string str);
     }
 }

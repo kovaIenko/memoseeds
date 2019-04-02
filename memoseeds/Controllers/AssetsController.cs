@@ -5,6 +5,7 @@ using memoseeds.Repositories.Purchase;
 using memoseeds.Models.Entities;
 using System.Collections.Generic;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace memoseeds.Controllers
 {
@@ -27,6 +28,23 @@ namespace memoseeds.Controllers
         {
             ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
             return Json(ModulesBySubjects(subjects));
+        }
+
+        [HttpGet("user/{id}/search/modules/{str}")]
+        public IActionResult SearchByModules([FromRoute] long id, [FromRoute] string str)
+        {
+            ICollection<AquiredModules> myAquiredModules = UserRepository.GetModulesByUserBySubString(id, str);
+            ICollection<Module> myModels = ModalsFromAquiredModules(myAquiredModules);
+            ICollection<Module> models = ModuleRepository.GetModulesBySubString(str);
+            return Ok(new { MyModels = myModels, NonLocal  = models});
+        }
+
+        private ICollection<Module> ModalsFromAquiredModules(ICollection<AquiredModules> myModelsUsers)
+        {
+            ICollection<Module> myModels = new List<Module>();
+            foreach(AquiredModules a in myModelsUsers)
+                myModels.Add(a.Module);
+            return myModels;
         }
 
         [HttpGet("user/{id}/modules")]
@@ -77,6 +95,10 @@ namespace memoseeds.Controllers
             else response = Ok(new { Error = "Not enough credits." });
             return response;
         }
+
+
+
+
 
         //[HttpPost("user/create/module")]
         //private void CreateModule([FromBody] ModuleData module)
@@ -129,6 +151,16 @@ namespace memoseeds.Controllers
                 }
             }
             return map;
+        }
+
+        public class UserData
+        {
+            [Required(ErrorMessage = "Email not specified")]
+            public string Email { set; get; }
+
+            [Required(ErrorMessage = "Password not specified")]
+            public string Password { set; get; }
+
         }
     }
 }

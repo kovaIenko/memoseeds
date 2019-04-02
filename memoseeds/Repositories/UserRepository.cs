@@ -93,6 +93,12 @@ namespace memoseeds.Repositories
             return modules;
         }
 
+        public ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str)
+        {
+            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).ThenInclude(r => r.Terms).Where(q => q.Module.Name.Contains(str)).Where(g => g.UserId == id).ToList();
+            return modules;
+        }
+
 
         public Module GetModuleWithTerms(long userId, long moduleId)
         {

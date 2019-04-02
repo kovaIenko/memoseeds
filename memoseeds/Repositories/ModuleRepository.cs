@@ -80,5 +80,17 @@ namespace memoseeds.Repositories
             Module module = context.Modules.Include(r => r.Terms).FirstOrDefault(g => g.ModuleId == moduleid);
             return module;
         }
+
+        public ICollection<Module> GetWithoutLocalWithTerms()
+        {
+            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).ToList();
+            return modules;
+        }
+
+        public ICollection<Module> GetModulesBySubString(string str)
+        {
+            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).Where(k => k.Name.Contains(str)).ToList();
+            return modules;
+        }
     }
 }
