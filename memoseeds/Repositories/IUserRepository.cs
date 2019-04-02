@@ -13,5 +13,6 @@ namespace memoseeds.Repositories
         Module GetModuleWithTerms(long userId, long moduleId);
         bool UserHasModel(long userId, long moduleId);
         ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str);
+        AquiredModules InsertUserModule(AquiredModules entity);
     }
 }

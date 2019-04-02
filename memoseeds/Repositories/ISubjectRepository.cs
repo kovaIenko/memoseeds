@@ -10,5 +10,7 @@ namespace memoseeds.Repositories
         ICollection<Subject> GetWithoutLocalModules();
         ICollection<Subject> GetWithoutLocalModulesTerms();
         ICollection<Subject> GetSubjectsWithCategories();
+        Subject GetSubjectName(string name);
+        Category GetCategoryName(string name);
     }
 }

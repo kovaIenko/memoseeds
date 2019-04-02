@@ -43,9 +43,11 @@ namespace memoseeds.Repositories
             this.disposed = true;
         }
 
-        public void Insert(Subject entity)
+        public Subject Insert(Subject entity)
         {
             context.Subjects.Add(entity);
+            Save();
+            return entity;
         }
 
         public void Save()
@@ -86,6 +88,16 @@ namespace memoseeds.Repositories
             ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).
             ThenInclude(r => r.Modules).ToList();
             return subjects;
+        }
+
+        public Subject GetSubjectName(string name)
+        {
+            return context.Subjects.Where(f => f.Name == name).FirstOrDefault();
+        }
+
+        public Category GetCategoryName(string name)
+        {
+            return context.Categories.Where(f => f.Name == name).FirstOrDefault();
         }
     }
 }

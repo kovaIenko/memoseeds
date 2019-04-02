@@ -27,7 +27,7 @@ namespace memoseeds.Controllers
         public JsonResult FilterCase([FromBody] Filter cases)
         {
             string _default = "default";
-            ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModules();
+            ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
             ICollection<Subject> result = new List<Subject>();
             if (!cases.Subject.Equals(_default))
             {             

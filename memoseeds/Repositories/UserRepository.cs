@@ -39,9 +39,11 @@ namespace memoseeds.Repositories
             return context.Users.Find(id);
         }
 
-        public void Insert(User entity)
+        public User Insert(User entity)
         {
             context.Users.Add(entity);
+            Save();
+            return entity;
         }
 
         public void Save()
@@ -95,7 +97,8 @@ namespace memoseeds.Repositories
 
         public ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str)
         {
-            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).ThenInclude(r => r.Terms).Where(q => q.Module.Name.Contains(str)).Where(g => g.UserId == id).ToList();
+            ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).
+            ThenInclude(r => r.Terms).Where(q => q.Module.Name.Contains(str)).Where(g => g.UserId == id).ToList();
             return modules;
         }
 
@@ -109,6 +112,13 @@ namespace memoseeds.Repositories
         public int NumbOfModules(long id)
         {
             return context.AquiredModules.Where(f => f.UserId == id).Count();
+        }
+
+        public AquiredModules InsertUserModule(AquiredModules entity)
+        {
+             context.AquiredModules.Add(entity);
+            context.SaveChanges();
+            return entity;
         }
 
 

@@ -79,7 +79,7 @@ namespace memoseeds.Controllers
         public IActionResult GetModule([FromRoute] long userid, [FromRoute] long moduleid)
         {
             IActionResult response = Unauthorized();
-            if (IsExist(userid, moduleid)) return Ok(new { error = "User has this module." });
+            if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
             Module module = ModuleRepository.GetById(moduleid);
             int moduleCost = module.Price;
             User user = UserRepository.GetById(userid);
@@ -91,21 +91,57 @@ namespace memoseeds.Controllers
                 user.Aquireds.Add(new AquiredModules() { LastEdit = DateTime.Now, Module = copied, User = user });
                 UserRepository.Update(user);
                 UserRepository.Save();
+                response = Ok(new { result = "You buy module successfully." });
             }
-            else response = Ok(new { Error = "Not enough credits." });
+            else response = Ok(new { result = "Not enough credits." });
             return response;
         }
 
+        [HttpPost("user/create/module")]
+        public IActionResult CreateModule([FromBody] ModuleData module)
+        {
+            IActionResult response = Unauthorized();
+            Category category = SubjectRepository.GetCategoryName(module.Category);
+            Module created = new Module()
+            {
+                CategoryId = category.CategoryId,
+                InheritedFrom = module.InheritedFrom,
+                IsLocal = module.IsLocal,
+                Name = module.Name,
+                Price = module.Price,
+                UserId = module.Author,
+               // Terms = GetTermFromIDict(module.Terms)
+            };
+
+            ModuleRepository.Insert(created);
+            ModuleRepository.Save();
+
+            created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
+            ModuleRepository.Update(created);
+            AquiredModules aquiredModules = new AquiredModules()
+            {
+                UserId = module.Author,
+                ModuleId = created.ModuleId
+            };
+            UserRepository.InsertUserModule(aquiredModules);
+            return Ok();
+        }
 
 
-
-
-        //[HttpPost("user/create/module")]
-        //private void CreateModule([FromBody] ModuleData module)
-        //{
-        //    IActionResult response = Unauthorized();
-
-        //}
+        private ICollection<Term> GetTermFromIDict(IDictionary<string, string> keyValue, long moduleid )
+        {
+            ICollection<Term> dictionary = new List<Term>();
+            foreach(string str in keyValue.Keys)
+            {
+                dictionary.Add(new Term()
+                {
+                    //ModuleId = moduleid,
+                    Name = str,
+                    Definition = keyValue[str],
+                });
+            }
+            return dictionary;
+        }
 
         /* check if user has this module */
         private bool IsExist(long useid, long moduleid)
@@ -161,6 +197,24 @@ namespace memoseeds.Controllers
             [Required(ErrorMessage = "Password not specified")]
             public string Password { set; get; }
 
+        }
+
+        public class ModuleData
+        {
+            [Required(ErrorMessage = "Author not specified")]
+            public long Author { set; get; }
+            [Required(ErrorMessage = "Category name not specified")]
+            public string Category { set; get; }
+            [Required(ErrorMessage = "Inherited id not specified")]
+            public long InheritedFrom { set; get; }
+            [Required(ErrorMessage = "Name not specified")]
+            public string Name { set; get; }
+            [Required(ErrorMessage = "Enviroment not specified")]
+            public bool IsLocal { set; get; }
+            [Required(ErrorMessage = "Price not specified")]
+            public int Price { set; get; }
+            [Required(ErrorMessage = "Terms not specified")]
+            public IDictionary<string, string> Terms { set; get; }
         }
     }
 }

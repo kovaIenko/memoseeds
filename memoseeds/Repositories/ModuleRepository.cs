@@ -51,9 +51,11 @@ namespace memoseeds.Repositories
         }
 
 
-        public void Insert(Module entity)
+        public Module Insert(Module entity)
         {
             context.Modules.Add(entity);
+            Save();
+            return entity;
         }
 
         public void Save()
@@ -77,7 +79,7 @@ namespace memoseeds.Repositories
 
         public Module GetModuleWithTerms(long moduleid)
         {
-            Module module = context.Modules.Include(r => r.Terms).FirstOrDefault(g => g.ModuleId == moduleid);
+            Module module = context.Modules.Include(r => r.Terms).FirstOrDefault(g => g.ModuleId == moduleid); 
             return module;
         }
 
@@ -92,5 +94,7 @@ namespace memoseeds.Repositories
             ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).Where(k => k.Name.Contains(str)).ToList();
             return modules;
         }
+
+       
     }
 }
