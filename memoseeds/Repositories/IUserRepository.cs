@@ -11,5 +11,6 @@ namespace memoseeds.Repositories
         int NumbOfModules(long id);
         User GetUserByEmail(string email);
         Module GetModuleWithTerms(long userId, long moduleId);
+        bool UserHasModel(long userId, long moduleId);
     }
 }

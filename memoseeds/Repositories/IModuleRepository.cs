@@ -7,6 +7,7 @@ namespace memoseeds.Repositories.Purchase
     public interface IModuleRepository: IRepository<Module>
     {
         ICollection<Module> GetPublicModules();
-         Module GetModuleWithTerms(long moduleid);
+        Module GetModuleWithTerms(long moduleid);
+    
     }
 }

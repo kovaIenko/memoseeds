@@ -36,6 +36,9 @@ namespace memoseeds.Models.Entities
         [JsonIgnore]
         public Category Category { get; set; }
 
+        [Column("inherited")]
+        public long InheritedFrom { get; set; }
+
         [Required]
         public virtual ICollection<Term> Terms { get; set; }
 

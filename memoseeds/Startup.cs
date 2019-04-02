@@ -55,7 +55,6 @@ namespace memoseeds
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
         };
     });
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -63,7 +62,7 @@ namespace memoseeds
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-         
+
             services.AddScoped<ITranslatorService, TranslatorService>();
             //services.AddScoped(typeof(IRepository<Subject>), typeof(SubjectRepository));
             services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));

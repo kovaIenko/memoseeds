@@ -31,7 +31,7 @@ namespace memoseeds.Repositories
 
         public void Delete(long Id)
         {
-           context.Users.Remove(GetById(Id));
+            context.Users.Remove(GetById(Id));
         }
 
         public User GetById(long id)
@@ -78,6 +78,13 @@ namespace memoseeds.Repositories
         {
             ICollection<User> res = context.Users.ToList();
             return res;
+        }
+
+
+        public bool UserHasModel(long userId, long moduleId)
+        {
+            AquiredModules module = context.AquiredModules.Where(d=>d.UserId==userId).FirstOrDefault(f => f.Module.InheritedFrom == moduleId || f.Module.UserId==userId);
+            return module != null;
         }
 
         public ICollection<AquiredModules> GetModulesByUser(long id)
