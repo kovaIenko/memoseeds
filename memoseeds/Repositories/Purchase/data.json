@@ -15,6 +15,22 @@
         "amount": 190,
         "currency": "uah"
       }
+    },
+    {
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "amount": 190,
+        "currency": "uah"
+      }
+    },
+    {
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "amount": 190,
+        "currency": "uah"
+      }
     }
   ],
 
@@ -24,6 +40,22 @@
       "name": "Clever goat",
       "price": {
         "amount": 10,
+        "currency": "usd"
+      }
+    },
+    {
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "amount": 19,
+        "currency": "usd"
+      }
+    },
+    {
+      "credits": 1000,
+      "name": "Smart hare",
+      "price": {
+        "amount": 19,
         "currency": "usd"
       }
     },
