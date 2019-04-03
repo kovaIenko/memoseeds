@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class UserController : Controller
     {

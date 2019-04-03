@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace memoseeds.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("shop")]
     public class ShopController : Controller
     {
