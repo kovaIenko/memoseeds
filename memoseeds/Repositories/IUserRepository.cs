@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using memoseeds.Models.Entities;
 
 namespace memoseeds.Repositories
@@ -12,6 +13,7 @@ namespace memoseeds.Repositories
         User GetUserByEmail(string email);
         Module GetModuleWithTerms(long userId, long moduleId);
         bool UserHasModel(long userId, long moduleId);
+        Byte[] getUserImage(long id);
         ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str);
         AquiredModules InsertUserModule(AquiredModules entity);
     }

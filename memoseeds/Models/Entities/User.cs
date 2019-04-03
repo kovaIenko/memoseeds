@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Metadata;
 using memoseeds.Models.Entities;
 
 namespace memoseeds.Models.Entities
@@ -32,6 +33,10 @@ namespace memoseeds.Models.Entities
         [Column("email")]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Column("image")]
+        [DataType(DataType.Upload)]
+        public Byte[] Img { get; set; }
 
         public virtual ICollection<Collector> Collectors { get; set; }
 

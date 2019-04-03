@@ -5,6 +5,7 @@ using memoseeds.Database;
 using memoseeds.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Reflection.Metadata;
 
 namespace memoseeds.Repositories
 {
@@ -120,6 +121,9 @@ namespace memoseeds.Repositories
              return entity;
         }
 
-
+        public Byte[] getUserImage(long id)
+        {
+            return GetById(id).Img;
+        }
     }
 }
