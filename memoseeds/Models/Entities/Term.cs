@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace memoseeds.Models.Entities
 {
@@ -16,6 +17,7 @@ namespace memoseeds.Models.Entities
 
         [Column("module")]
         public long? ModuleId { get; set; }
+        [JsonIgnore]
         public Module Module { get; set; }
 
         [Column("definition")]

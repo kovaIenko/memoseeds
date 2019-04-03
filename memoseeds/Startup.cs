@@ -16,6 +16,10 @@ using memoseeds.Services;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
 using memoseeds.Models.Entities;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Buffers;
 
 namespace memoseeds
 {
@@ -33,7 +37,7 @@ namespace memoseeds
         {
 
             services.AddDbContext<Database.ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")).ConfigureWarnings(warnings => warnings.Throw(CoreEventId.IncludeIgnoredWarning))
            );
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -50,7 +54,6 @@ namespace memoseeds
             IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
         };
     });
-
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -58,13 +61,17 @@ namespace memoseeds
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-         
+
             services.AddScoped<ITranslatorService, TranslatorService>();
             //services.AddScoped(typeof(IRepository<Subject>), typeof(SubjectRepository));
             services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));
+            services.AddScoped(typeof(ISubjectRepository), typeof(SubjectRepository));
+            services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
             // services.Add<IRepository, SubjectRepository>();
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+        options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    );
 
         }
 
@@ -73,9 +80,8 @@ namespace memoseeds
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
+            
             else
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -86,7 +92,6 @@ namespace memoseeds
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

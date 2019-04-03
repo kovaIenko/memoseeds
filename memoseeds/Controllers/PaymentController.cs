@@ -1,4 +1,4 @@
-﻿using memoseeds.Repositories.Purchase.DataConfig;
+using memoseeds.Repositories.Purchase.DataConfig;
 using memoseeds.Repositories.Purchase.Requests;
 using memoseeds.Database;
 
@@ -28,6 +28,7 @@ namespace memoseeds.Controllers
             char pathDirSep = Path.DirectorySeparatorChar;
             string configPath = String.Format("{0}Repositories{0}Purchase{0}config.json", pathDirSep);
             string dataPath = String.Format("{0}Repositories{0}Purchase{0}data.json", pathDirSep);
+
             using (
                 StreamReader
                 configFile = new StreamReader(purchaseRepoPath + configPath),

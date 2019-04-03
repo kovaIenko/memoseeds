@@ -5,9 +5,9 @@ namespace memoseeds.Repositories
     {
 
         T GetById(long id);
-        void Insert(T entity);
+        T Insert(T entity);
         void Delete(long Id);
-        void Update(T entity);
+        T Update(T entity);
         void Save(); 
     }
 }

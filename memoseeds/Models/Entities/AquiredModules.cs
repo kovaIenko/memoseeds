@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace memoseeds.Models.Entities
 {
@@ -12,13 +13,20 @@ namespace memoseeds.Models.Entities
         [Column("id")]
         public long AquiredModulesId { get; set; }
 
+        [JsonIgnore]
         [Column("user")]
-        public long UserId { get; set; }
+        public long? UserId { get; set; }
+        [JsonIgnore]
         public User User { get; set; }
 
         [Column("module")]
-        public long ModuleId { get; set; }
+        [JsonIgnore]
+        public long? ModuleId { get; set; }
         public Module Module { get; set; }
+
+        [Column("last_edit")]
+        [DataType(DataType.Date)]
+        public DateTime LastEdit { get; set; }
 
     }
 }

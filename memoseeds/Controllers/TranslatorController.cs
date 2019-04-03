@@ -5,7 +5,7 @@ using memoseeds.Services;
 
 namespace memoseeds.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class TranslatorController : Controller
     {

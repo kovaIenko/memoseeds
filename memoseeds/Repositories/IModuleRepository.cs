@@ -4,8 +4,11 @@ using memoseeds.Models.Entities;
 
 namespace memoseeds.Repositories.Purchase
 {
-    public interface IModuleRepository
+    public interface IModuleRepository: IRepository<Module>
     {
         ICollection<Module> GetPublicModules();
+        Module GetModuleWithTerms(long moduleid);
+        ICollection<Module> GetWithoutLocalWithTerms();
+        ICollection<Module> GetModulesBySubString(string str);
     }
 }

@@ -1,11 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using memoseeds.Database;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories.Purchase;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Data.Entity;
-
 
 namespace memoseeds.Repositories
 {
@@ -19,7 +19,6 @@ namespace memoseeds.Repositories
         {
             this.context = context;
         }
-
 
         public void Dispose()
         {
@@ -41,19 +40,22 @@ namespace memoseeds.Repositories
 
         public Module GetById(long id)
         {
-            return context.Modules.Find(id);
+            /* треба протестувати*/
+            return context.Modules.Include(g => g.Terms).First();
         }
 
         public ICollection<Module> GetPublicModules()
         {
-            ICollection<Module> modules = context.Modules.Include(h=>h.Terms).ToList<Module>();
-
+            ICollection<Module> modules = context.Modules.Include(e=>e.Category).Include(n => n.Terms).ToList();
             return modules;
         }
 
-        public void Insert(Module entity)
+
+        public Module Insert(Module entity)
         {
             context.Modules.Add(entity);
+            Save();
+            return entity;
         }
 
         public void Save()
@@ -61,9 +63,12 @@ namespace memoseeds.Repositories
             context.SaveChanges();
         }
 
-        public void Update(Module entity)
+        public Module Update(Module entity)
         {
-            context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            context.Entry(entity).State = EntityState.Modified;
+            Save();
+            Module updated = context.Modules.Find(entity.ModuleId);
+            return updated;
         }
 
         public void Delete(long Id)
@@ -71,5 +76,25 @@ namespace memoseeds.Repositories
             Module entity = context.Modules.Find(Id);
             context.Modules.Remove(entity);
         }
+
+        public Module GetModuleWithTerms(long moduleid)
+        {
+            Module module = context.Modules.Include(r => r.Terms).FirstOrDefault(g => g.ModuleId == moduleid); 
+            return module;
+        }
+
+        public ICollection<Module> GetWithoutLocalWithTerms()
+        {
+            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).ToList();
+            return modules;
+        }
+
+        public ICollection<Module> GetModulesBySubString(string str)
+        {
+            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).Where(k => k.Name.Contains(str)).ToList();
+            return modules;
+        }
+
+       
     }
 }

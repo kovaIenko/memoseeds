@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using memoseeds.Database;
 using memoseeds.Models.Entities;
+using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,29 +16,14 @@ namespace memoseeds.Controllers
     [ApiController]
     public class AccountController : Controller
     {
-        private ApplicationDbContext db;
+        private IUserRepository UserRepository;        
         private IConfiguration _config;
 
-        public AccountController(ApplicationDbContext context, IConfiguration config)
+
+        public AccountController(IUserRepository UserRepositor, IConfiguration config)
         {
-             db = context;
+            UserRepository = UserRepositor;
             _config = config;
-        }
-
-        [AllowAnonymous]
-        [HttpGet("/login")]
-        public JsonResult Log()
-        {
-            //db.Users.Add(new User()
-            //{
-            //    Username = "kovalenko",
-            //    Email = "ruskov@gmail.com",
-            //    Password="qwerty123",
-            //    Credits = 5000
-
-
-            //});
-            return Json("hello");
         }
 
         // POST:
@@ -49,11 +32,29 @@ namespace memoseeds.Controllers
         public async Task<IActionResult> Login([FromBody]UserAuthenticateData login)
         {
             IActionResult response = Unauthorized();
-            var user = await AuthenticateUserAsync(login);
+            User user;
+            if (login.IsUsername)
+            {
+                user = UserRepository.GetUserByName(login.Username);
+            }
+            else{
+                user = UserRepository.GetUserByEmail(login.Username);
+            }
             if (user != null)
             {
-                var tokenString = GenerateJSONWebToken(user);
-                response = Ok(new { token = tokenString, info = user});
+                if (user.Password.Equals(login.Password))
+                {
+                    var tokenString = GenerateJSONWebToken(user);
+                    response = Ok(new { token = tokenString, info = user });
+                }
+                else
+                {
+                    response = Ok(new { Error = "Incorrect password." });
+                }
+            }
+            else
+            {
+                response = Ok(new { Error = "User with that username not found" });
             }
             return response;
         }
@@ -79,24 +80,16 @@ namespace memoseeds.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<User> AuthenticateUserAsync(UserAuthenticateData data)
-        {
-            User user = await db.Users.FirstOrDefaultAsync(
-            u => u.Username == data.Username &&
-                 u.Password == data.Password
-            );
-            return user;
-        }
-
         [HttpPost("/signup")]
-        public async Task<IActionResult> Register(UserRegisterData data)
+        public async Task<IActionResult> Register([FromBody]UserRegisterData data)
         {
-            if (ModelState.IsValid)
-            {
-                User user = await db.Users.FirstOrDefaultAsync(u => 
-                    u.Username == data.Username ||
-                    u.Email == data.Email
-                    );
+            IActionResult response = Unauthorized();
+                User user = UserRepository.GetUserByEmail(data.Email);
+                if (user != null)
+                    response = Ok(new { Error = "This email is already taken." });
+                user = UserRepository.GetUserByName(data.Username);
+                if (user != null)
+                    response = Ok(new { Error = "This username is already taken." });
                 if (user == null)
                 {
                     // adding user to db
@@ -106,20 +99,19 @@ namespace memoseeds.Controllers
                         Email = data.Email,
                         Password = data.Password
                     };
-                    db.Users.Add(user);
-                    await db.SaveChangesAsync();
-                    return Ok(new { token = GenerateJSONWebToken(user) });
+                    UserRepository.Insert(user);
+                    response = Ok(new { token = GenerateJSONWebToken(user) , info = user});
                 }
-                else
-                    ModelState.AddModelError("ErrorStack", "This login or email is already taken");
-            }
-            return BadRequest(ModelState);
+            return response;
         }
 
         public class UserAuthenticateData
         {
             [Required(ErrorMessage = "Username not specified")]
             public string Username { get; set; }
+
+            [Required(ErrorMessage = "Bool not specified")]
+            public bool IsUsername { get; set; }
 
             [Required(ErrorMessage = "Password not specified")]
             [DataType(DataType.Password)]
