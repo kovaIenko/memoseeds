@@ -6,6 +6,7 @@ using memoseeds.Models.Entities;
 using System.Collections.Generic;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace memoseeds.Controllers
 {
@@ -24,25 +25,45 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("shop/subjects/categories/modules")]
-        public JsonResult GetWithoutLocalModules()
+        public IActionResult GetWithoutLocalModules()
         {
-            ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
-            return Json(ModulesBySubjects(subjects));
+            IActionResult response = Unauthorized();
+            try
+            {
+                ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
+                response = Ok(ModulesBySubjects(subjects));
+            }
+            catch (Exception e)
+            {
+                response = Ok(new { e });
+            }
+            return response;
+
         }
 
         [HttpGet("user/{id}/search/modules/{str}")]
         public IActionResult SearchByModules([FromRoute] long id, [FromRoute] string str)
         {
-            ICollection<AquiredModules> myAquiredModules = UserRepository.GetModulesByUserBySubString(id, str);
-            ICollection<Module> myModels = ModalsFromAquiredModules(myAquiredModules);
-            ICollection<Module> models = ModuleRepository.GetModulesBySubString(str);
-            return Ok(new { MyModels = myModels, NonLocal  = models});
+            IActionResult response = Unauthorized();
+            try
+            {
+                if (str.Length == 0) throw new FormatException();
+                ICollection<AquiredModules> myAquiredModules = UserRepository.GetModulesByUserBySubString(id, str);
+                ICollection<Module> myModels = ModalsFromAquiredModules(myAquiredModules);
+                ICollection<Module> models = ModuleRepository.GetModulesBySubString(str);
+                response = Ok(new { MyModels = myModels, NonLocal = models });
+                return response;
+            }
+            catch (Exception e)
+            {
+                return Ok(new { e });
+            }
         }
 
         private ICollection<Module> ModalsFromAquiredModules(ICollection<AquiredModules> myModelsUsers)
         {
             ICollection<Module> myModels = new List<Module>();
-            foreach(AquiredModules a in myModelsUsers)
+            foreach (AquiredModules a in myModelsUsers)
                 myModels.Add(a.Module);
             return myModels;
         }
@@ -65,13 +86,22 @@ namespace memoseeds.Controllers
         public JsonResult GetFullModule([FromRoute] long moduleid)
         {
             Module module = ModuleRepository.GetModuleWithTerms(moduleid);
+            module.Terms = LeaveNTerms(module.Terms);
             return Json(module);
+        }
+
+        private ICollection<Term> LeaveNTerms(ICollection<Term> terms)
+        {
+            ICollection<Term> temps = new List<Term>();
+            for (int i = 0; i < 5; i++)
+                temps.Add(terms.ElementAt(i));
+            return temps;
         }
 
         [HttpGet("shop/subjects/categories")]
         public JsonResult GetSubjectsWithCategories()
         {
-            ICollection<Subject> subjects = SubjectRepository.GetSubjectsWithCategories();      
+            ICollection<Subject> subjects = SubjectRepository.GetSubjectsWithCategories();
             return Json(SubjectsToDictionary(subjects));
         }
 
@@ -97,50 +127,22 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpPost("user/create/module")]
-        public IActionResult CreateModule([FromBody] ModuleData module)
+
+        private Dictionary<string, ICollection<Module>> ModulesBySubjects(ICollection<Subject> subjects)
         {
-            IActionResult response = Unauthorized();
-            Category category = SubjectRepository.GetCategoryName(module.Category);
-            Module created = new Module()
+            Dictionary<string, ICollection<Module>> map = new Dictionary<string, ICollection<Module>>();
+            foreach (Subject s in subjects)
             {
-                CategoryId = category.CategoryId,
-                InheritedFrom = module.InheritedFrom,
-                IsLocal = module.IsLocal,
-                Name = module.Name,
-                Price = module.Price,
-                UserId = module.Author,
-               // Terms = GetTermFromIDict(module.Terms)
-            };
-
-            ModuleRepository.Insert(created);
-            ModuleRepository.Save();
-
-            created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
-            ModuleRepository.Update(created);
-            AquiredModules aquiredModules = new AquiredModules()
-            {
-                UserId = module.Author,
-                ModuleId = created.ModuleId
-            };
-            UserRepository.InsertUserModule(aquiredModules);
-            return Ok();
-        }
-
-
-        private ICollection<Term> GetTermFromIDict(IDictionary<string, string> keyValue, long moduleid )
-        {
-            ICollection<Term> dictionary = new List<Term>();
-            foreach(string str in keyValue.Keys)
-            {
-                dictionary.Add(new Term()
+                map.Add(s.Name, new List<Module>());
+                ICollection<Category> categories = s.Categories;
+                foreach (Category c in categories)
                 {
-                    //ModuleId = moduleid,
-                    Name = str,
-                    Definition = keyValue[str],
-                });
+                    ICollection<Module> modules = c.Modules;
+                    foreach (Module m in modules)
+                        map[s.Name].Add(m);
+                }
             }
-            return dictionary;
+            return map;
         }
 
         /* check if user has this module */
@@ -172,23 +174,6 @@ namespace memoseeds.Controllers
             return map;
         }
 
-        private Dictionary<string, ICollection<Module>> ModulesBySubjects(ICollection<Subject> subjects)
-        {
-            Dictionary<string, ICollection<Module>> map = new Dictionary<string, ICollection<Module>>();
-            foreach (Subject s in subjects)
-            {
-                map.Add(s.Name, new List<Module>());
-                ICollection<Category> categories = s.Categories;
-                foreach (Category c in categories)
-                {
-                    ICollection<Module> modules = c.Modules;
-                    foreach (Module m in modules)
-                        map[s.Name].Add(m);
-                }
-            }
-            return map;
-        }
-
         public class UserData
         {
             [Required(ErrorMessage = "Email not specified")]
@@ -199,22 +184,6 @@ namespace memoseeds.Controllers
 
         }
 
-        public class ModuleData
-        {
-            [Required(ErrorMessage = "Author not specified")]
-            public long Author { set; get; }
-            [Required(ErrorMessage = "Category name not specified")]
-            public string Category { set; get; }
-            [Required(ErrorMessage = "Inherited id not specified")]
-            public long InheritedFrom { set; get; }
-            [Required(ErrorMessage = "Name not specified")]
-            public string Name { set; get; }
-            [Required(ErrorMessage = "Enviroment not specified")]
-            public bool IsLocal { set; get; }
-            [Required(ErrorMessage = "Price not specified")]
-            public int Price { set; get; }
-            [Required(ErrorMessage = "Terms not specified")]
-            public IDictionary<string, string> Terms { set; get; }
-        }
+
     }
 }

@@ -10,7 +10,6 @@ namespace memoseeds.Repositories
 {
     public class UserRepository : IRepository<User>, IDisposable, IUserRepository
     {
-
         public User GetUserByName(string name)
         {
             return context.Users.Where(h => h.Username.Equals(name)).FirstOrDefault();
@@ -117,8 +116,8 @@ namespace memoseeds.Repositories
         public AquiredModules InsertUserModule(AquiredModules entity)
         {
              context.AquiredModules.Add(entity);
-            context.SaveChanges();
-            return entity;
+             context.SaveChanges();
+             return entity;
         }
 
 
