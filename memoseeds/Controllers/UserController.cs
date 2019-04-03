@@ -29,58 +29,60 @@ namespace memoseeds.Controllers
             try
             {
                 Category category = SubjectRepository.GetCategoryName(module.Category);
-                Module created = CreateModule(module);
+                Module created = CreateModule(module, category.CategoryId);
                 ModuleRepository.Insert(created);
 
                 created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
                 Module added = ModuleRepository.Update(created);
-                DateTime current = System.DateTime;
-                AquiredModules aquiredModules = new AquiredModules()
-                {
-                    UserId = module.Author,
-                    ModuleId = created.ModuleId,
-                    LastEdit =
-                };
+                AquiredModules aquiredModules = CreateUserModule(module.Author, created.ModuleId);
 
                 UserRepository.InsertUserModule(aquiredModules);
-            }catch(Exception e)
-            {
-
+                response = Ok(new { module = added });
             }
-
-            }
-
-            private Module CreateModule(ModuleData obj)
+            catch (Exception e)
             {
-                return new Module()
+                response = Ok(new { e });
+            }
+            return response;
+        }
+
+        private AquiredModules CreateUserModule(long userid, long moduleid)
+        {
+            return new AquiredModules()
+            {
+                UserId = userid,
+                ModuleId = moduleid,
+                LastEdit = DateTime.Now
+            };
+        }
+
+        private Module CreateModule(ModuleData module, long categoryId)
+        {
+            if (!module.IsLocal && module.Category == "default") throw new FormatException("Non-local module must contain a category!");
+            return new Module()
+            {
+                CategoryId = categoryId,
+                InheritedFrom = module.InheritedFrom,
+                IsLocal = module.IsLocal,
+                Name = module.Name,
+                Price = module.Price,
+                UserId = module.Author,
+            };
+        }
+
+        private ICollection<Term> GetTermFromIDict(IDictionary<string, string> keyValue, long moduleid)
+        {
+            ICollection<Term> dictionary = new List<Term>();
+            foreach (string str in keyValue.Keys)
+            {
+                dictionary.Add(new Term()
                 {
-                    CategoryId = category.CategoryId,
-                    InheritedFrom = module.InheritedFrom,
-                    IsLocal = module.IsLocal,
-                    Name = module.Name,
-                    Price = module.Price,
-                    UserId = module.Author,
-                    // Terms = GetTermFromIDict(module.Terms)
-                };
-
+                    Name = str,
+                    Definition = keyValue[str],
+                });
             }
-
-
-            private ICollection<Term> GetTermFromIDict(IDictionary<string, string> keyValue, long moduleid)
-            {
-                ICollection<Term> dictionary = new List<Term>();
-                foreach (string str in keyValue.Keys)
-                {
-                    dictionary.Add(new Term()
-                    {
-                        //ModuleId = moduleid,
-                        Name = str,
-                        Definition = keyValue[str],
-                    });
-                }
-                return dictionary;
-            }
-
+            return dictionary;
+        }
 
         public class ModuleData
         {
