@@ -57,7 +57,7 @@ namespace memoseeds.Controllers
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
             new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
-            new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+       //     new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
        // new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
