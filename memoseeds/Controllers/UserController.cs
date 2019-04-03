@@ -37,7 +37,7 @@ namespace memoseeds.Controllers
                 AquiredModules aquiredModules = CreateUserModule(module.Author, created.ModuleId);
 
                 UserRepository.InsertUserModule(aquiredModules);
-                response = Ok(new { module = added });
+                response = Ok(new { moduleId = added.ModuleId });
             }
             catch (Exception e)
             {

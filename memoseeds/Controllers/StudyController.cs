@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
 
     [ApiController]
+    [Authorize]
     public class StudyController:  Controller
     {
         private IModuleRepository ModuleRepository;

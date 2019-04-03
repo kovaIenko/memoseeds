@@ -2,10 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using memoseeds.Services;
+using System;
 
 namespace memoseeds.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class TranslatorController : Controller
     {
@@ -20,8 +21,16 @@ namespace memoseeds.Controllers
         [HttpPost("/translate")]
         public IActionResult Translate([FromBody]TermToTranslate term)
         {
-            string transResponse = translatorService.translate(term.SourceText, term.SourceLanguage, term.TargetLanguage);
-            return Json(transResponse);
+            IActionResult response = Unauthorized();
+            try
+            {
+                string transResponse = translatorService.translate(term.SourceText, term.SourceLanguage, term.TargetLanguage);
+                response = Ok(new { transResponse });
+            }catch(Exception e)
+            {
+                response = Ok(new { e });
+            }
+            return response;
         }
 
         public class TermToTranslate

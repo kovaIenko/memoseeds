@@ -19,15 +19,18 @@ namespace memoseeds.Repositories.Purchase.Requests
         public string purchaseId { get; private set; }
         public string email { get; private set; }
         public string sourceToken { get; private set; }
+        public long userId { get; private set; }
 
         public CheckoutInfo(
             string purchaseId, 
             string email, 
-            string sourceToken
+            string sourceToken, 
+            long userId
         ) {
             this.purchaseId = purchaseId;
             this.email = email;
             this.sourceToken = sourceToken;
+            this.userId = userId;      
         }
     }
 

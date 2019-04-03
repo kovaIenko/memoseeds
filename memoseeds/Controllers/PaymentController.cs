@@ -9,8 +9,15 @@ using Newtonsoft.Json;
 using Stripe;
 using System;
 
+using memoseeds.Database;
+using Microsoft.AspNetCore.Authorization;
+using memoseeds.Repositories;
+using memoseeds.Models.Entities;
+
+
 namespace memoseeds.Controllers
 {
+    [Authorize]
     [Route("purchase")]
     [ApiController]
     public class PaymentController : Controller
@@ -42,7 +49,7 @@ namespace memoseeds.Controllers
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<PurchaseData>>>(dataJSON);
 
             setupIds(PaymentController.countryToPurchases);
-            setupStripe(PaymentController.purchaseConfig);
+            SetupStripe(PaymentController.purchaseConfig);
         }
 
         private static void setupIds(Dictionary<string, List<PurchaseData>> d)
@@ -56,14 +63,15 @@ namespace memoseeds.Controllers
                 }
             }
         }
-        private static void setupStripe(PurchaseConfig purchaseConfig)
+        private static void SetupStripe(PurchaseConfig purchaseConfig)
         {
             StripeConfiguration.SetApiKey(purchaseConfig.stripeConfig.secretKey);
 
             customerService = new CustomerService();
             chargeService = new ChargeService();
         }
-        private static PurchaseData findPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
+
+        private static PurchaseData FindPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
         {
             foreach (string key in d.Keys)
             {
@@ -78,14 +86,14 @@ namespace memoseeds.Controllers
             return null;
         }
 
-        private ApplicationDbContext dbContext = null;
-        public PaymentController(ApplicationDbContext dbContext)
+        private IUserRepository UserRepository;
+        public PaymentController(IUserRepository UserRepository)
         {
-            this.dbContext = dbContext;
+            this.UserRepository = UserRepository;
         }
 
         [HttpPost("options")]
-        public ActionResult provideOptions(UserInfo info)
+        public ActionResult ProvideOptions(UserInfo info)
         {
             string countryRes = info.country;
             if (info.country == null || info.country.Length < 1)
@@ -105,12 +113,12 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("checkout")]
-        public ActionResult tryCheckout(CheckoutInfo info)
+        public ActionResult TryCheckout(CheckoutInfo info)
         {
             string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
-            PurchaseData purchase = findPurchaseData(PaymentController.countryToPurchases, id);
+            PurchaseData purchase = FindPurchaseData(PaymentController.countryToPurchases, id);
 
-            ActionResult res = null;
+            ActionResult response = Unauthorized();
             try
             {
                 var customer = customerService.Create(new CustomerCreateOptions
@@ -130,20 +138,22 @@ namespace memoseeds.Controllers
                 if(charge != null)
                 {
                     if (charge.Paid)
-                    {
-                        //add credits to db user here
+                    { 
+                        User user =  UserRepository.GetById(info.userId);
+                        user.Credits += purchase.credits;
+                        UserRepository.Insert(user);
                     }
 
                     string chargeString = JsonConvert.SerializeObject(charge);
-                    res = new ContentResult { Content = chargeString, ContentType = "application/json" };
+                    response = new ContentResult { Content = chargeString, ContentType = "application/json" };
                 }
 
             } catch(Exception e)
             {
-                res = null;
+                response = Ok(new { e });
             }
 
-            return res;
+            return response;
         }
     }
 }

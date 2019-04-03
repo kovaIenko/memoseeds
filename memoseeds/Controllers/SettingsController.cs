@@ -1,12 +1,14 @@
-﻿ using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("settings")]
     public class SettingsController : Controller
     {
@@ -47,11 +49,11 @@ namespace memoseeds.Controllers
                     {
                         response = Ok(new { Error = "This id has another email." });
                     }
-                    }
+                }
                 else
                 {
                     response = Ok(new { Error = "Id not exist" });
-                    }
+                }
             }
             return response;
         }
@@ -75,20 +77,14 @@ namespace memoseeds.Controllers
                             int count = UserRepository.NumbOfModules(entity.UserId);
                             response = Ok(new { UpdatedUser = updated, CountOfModules = count });
                         }
-                        else
-                        {
-                            response = Ok(new { Error = "Equals Passwords." });
-                        }
+                        else                     
+                            response = Ok(new { Error = "Equals Passwords." });                       
                     }
-                    else
-                    {
-                        response = Ok(new { Error = "This id has another password." });
-                    }
+                    else                    
+                        response = Ok(new { Error = "This id has another password." });       
                 }
-                else
-                {
+                else               
                     response = Ok(new { Error = "Id not exist." });
-                }
             }
             return response;
         }
@@ -113,24 +109,14 @@ namespace memoseeds.Controllers
                             int count = UserRepository.NumbOfModules(entity.UserId);
                             response = Ok(new { UpdatedUser = updated, CountOfModules = count });
                         }
-                        else
-                        {
-                            response = Ok(new { Error = "Equals names." });
-                        }
+                        else response = Ok(new { Error = "Equals names." });
                     }
-                    else
-                    {
-                        response = Ok(new { Error = "This id has another username." });
-                    }
+                    else response = Ok(new { Error = "This id has another username." });
                 }
-                else
-                {
-                    response = Ok(new { Error = "Id not exist." });
-                }
+                else response = Ok(new { Error = "Id not exist." });
             }
             return response;
         }
-
 
         public class Data
         {

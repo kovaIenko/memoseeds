@@ -19,7 +19,6 @@ namespace memoseeds.Controllers
         private IUserRepository UserRepository;        
         private IConfiguration _config;
 
-
         public AccountController(IUserRepository UserRepositor, IConfiguration config)
         {
             UserRepository = UserRepositor;
@@ -29,17 +28,14 @@ namespace memoseeds.Controllers
         // POST:
         [AllowAnonymous]
         [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody]UserAuthenticateData login)
+        public IActionResult Login([FromBody]UserAuthenticateData login)
         {
             IActionResult response = Unauthorized();
             User user;
             if (login.IsUsername)
-            {
                 user = UserRepository.GetUserByName(login.Username);
-            }
-            else{
+            else
                 user = UserRepository.GetUserByEmail(login.Username);
-            }
             if (user != null)
             {
                 if (user.Password.Equals(login.Password))
@@ -48,14 +44,10 @@ namespace memoseeds.Controllers
                     response = Ok(new { token = tokenString, info = user });
                 }
                 else
-                {
                     response = Ok(new { Error = "Incorrect password." });
-                }
             }
             else
-            {
                 response = Ok(new { Error = "User with that username not found" });
-            }
             return response;
         }
 
@@ -63,14 +55,12 @@ namespace memoseeds.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
             var claims = new[] {
             new Claim(JwtRegisteredClaimNames.Sub, userInfo.Username),
-       // new Claim(JwtRegisteredClaimNames.Email, userInfo.EmailAddress),
+            new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
        // new Claim("DateOfJoing", userInfo.DateOfJoing.ToString("yyyy-MM-dd")),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
-
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
               claims,
@@ -81,7 +71,7 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("/signup")]
-        public async Task<IActionResult> Register([FromBody]UserRegisterData data)
+        public IActionResult Register([FromBody]UserRegisterData data)
         {
             IActionResult response = Unauthorized();
                 User user = UserRepository.GetUserByEmail(data.Email);

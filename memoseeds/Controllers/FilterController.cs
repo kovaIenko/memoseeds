@@ -5,11 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
     [ApiController]
+    [Authorize]
     public class FilterController : Controller
     {
         private IModuleRepository ModuleRepository;
@@ -39,7 +41,6 @@ namespace memoseeds.Controllers
 
             return Json(subjects);
         }
-
 
         private Subject ChooseSubject(ICollection<Subject> subjects, string sub, string cat,string _default)
         {
