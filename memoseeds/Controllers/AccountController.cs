@@ -54,6 +54,24 @@ namespace memoseeds.Controllers
             return response;
         }
 
+        [HttpPost("/updateImage")]
+        public IActionResult updateImage([FromBody]UserData usr)
+        {
+            IActionResult response = Unauthorized();
+            User user = UserRepository.GetById(usr.id);
+            if (user != null)
+            {
+                user.Img = usr.image;
+                UserRepository.Update(user);
+                response = Ok( new { data = user});
+            }
+            else
+                response = Ok(new { Error = "User with that username not found" });
+            return response;
+
+            return response;
+        }
+
         private string GenerateJSONWebToken(User userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -123,5 +141,14 @@ namespace memoseeds.Controllers
             [DataType(DataType.Password)]
             public string Password { get; set; }
         }
+    }
+
+    public class UserData
+    {
+        [Required(ErrorMessage = "Id not specified")]
+        public long id { get; set; }
+
+        [Required(ErrorMessage = "Image not specified")]
+        public Byte[] image { get; set; }
     }
 }
