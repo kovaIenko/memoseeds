@@ -4,10 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
+    [Authorize]
     [ApiController]
     public class UserController : Controller
     {

@@ -36,6 +36,7 @@ namespace memoseeds.Controllers
                 user = UserRepository.GetUserByName(login.Username);
             else
                 user = UserRepository.GetUserByEmail(login.Username);
+
             if (user != null)
             {
                 if (user.Password.Equals(login.Password))

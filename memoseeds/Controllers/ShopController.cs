@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace memoseeds.Controllers
 {
     [ApiController]
-   // [Authorize]
+    [Authorize]
     [Route("shop")]
     public class ShopController : Controller
     {
@@ -61,8 +61,10 @@ namespace memoseeds.Controllers
 
         private ICollection<Term> LeaveNTerms(ICollection<Term> terms)
         {
+            int limit = 5;
+            if (terms.Count <= limit) return terms;
             ICollection<Term> temps = new List<Term>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < limit; i++)
                 temps.Add(terms.ElementAt(i));
             return temps;
         }
