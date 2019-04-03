@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 using Stripe;
 using System;
 
-using memoseeds.Database;
 using Microsoft.AspNetCore.Authorization;
 using memoseeds.Repositories;
 using memoseeds.Models.Entities;
@@ -17,7 +16,7 @@ using memoseeds.Models.Entities;
 
 namespace memoseeds.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("purchase")]
     [ApiController]
     public class PaymentController : Controller

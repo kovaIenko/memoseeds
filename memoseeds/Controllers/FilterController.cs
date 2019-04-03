@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace memoseeds.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class FilterController : Controller
     {
         private IModuleRepository ModuleRepository;

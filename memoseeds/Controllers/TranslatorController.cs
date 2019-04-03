@@ -6,7 +6,7 @@ using System;
 
 namespace memoseeds.Controllers
 {
-    [Authorize]
+   // [Authorize]
     [ApiController]
     public class TranslatorController : Controller
     {

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace memoseeds.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AssetsController : Controller
     {
         private IModuleRepository ModuleRepository;
