@@ -33,7 +33,7 @@ namespace memoseeds.Controllers
             {
                 ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
                 Dictionary<string, ICollection<Module>> dictionary = ModulesBySubjects(subjects);
-                response = Ok(new { dictionary });
+                response = Ok(dictionary);
             }
             catch (Exception e)
             {
