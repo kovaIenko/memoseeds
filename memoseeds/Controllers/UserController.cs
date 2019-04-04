@@ -11,6 +11,7 @@ namespace memoseeds.Controllers
 {
     //[Authorize]
     [ApiController]
+    [Route("user")]
     public class UserController : Controller
     {
         private IModuleRepository ModuleRepository;
@@ -24,7 +25,7 @@ namespace memoseeds.Controllers
             this.UserRepository = UserRepository;
         }
 
-        [HttpPost("user/create/module")]
+        [HttpPost("create/module")]
         public IActionResult CreateModule([FromBody] ModuleData module)
         {
             IActionResult response = Unauthorized();
@@ -46,6 +47,86 @@ namespace memoseeds.Controllers
                 response = Ok(new { e });
             }
             return response;
+        }
+
+        [HttpPost("{userid}/has/module/{moduleid}")]
+        public IActionResult UserHasModule([FromRoute] long userid, [FromRoute] long moduleid)
+        {
+            IActionResult response = Unauthorized();
+            try
+            {
+                bool userHasModule = IsExist(userid, moduleid);
+                response = Ok(new { result = userHasModule });
+            }
+            catch (Exception e)
+            {
+                response = BadRequest(new { e });
+            }
+            return response;
+        }
+
+        [HttpPost("{userid}/resources/module/{moduleid}")]
+        public IActionResult UserHasEnoughMoney([FromRoute] long userid, [FromRoute] long moduleid)
+        {
+            IActionResult response = Unauthorized();
+            try
+            {
+                Module module = ModuleRepository.GetById(moduleid);
+                int moduleCost = module.Price;
+                User user = UserRepository.GetById(userid);
+                response = Ok(new { result = (user.Credits >= moduleCost) });
+            }
+            catch (Exception e)
+            {
+                response = BadRequest(new { e });
+            }
+            return response;
+        }
+
+
+        [HttpPost("{userid}/get/module/{moduleid}")]
+        public IActionResult GetModule([FromRoute] long userid, [FromRoute] long moduleid)
+        {
+            IActionResult response = Unauthorized();
+            try
+            {
+                if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
+                Module module = ModuleRepository.GetById(moduleid);
+                int moduleCost = module.Price;
+                User user = UserRepository.GetById(userid);
+                if (user.Credits >= moduleCost)
+                {
+                    Module copied = Copy(module);
+                    user.Credits -= moduleCost;
+                    //має працювати
+                    user.Aquireds.Add(new AquiredModules() { LastEdit = DateTime.Now, Module = copied, User = user });
+                    UserRepository.Update(user);
+                    UserRepository.Save();
+                    response = Ok(new { result = "success", moduleId = copied.ModuleId });
+                }
+                else response = Ok(new { result = "Not enough credits." });
+            }
+            catch (Exception e)
+            {
+                response = Ok(new { e });
+            }
+            return response;
+        }
+
+        /* check if user has this module */
+        private bool IsExist(long useid, long moduleid)
+        {
+            bool userHas = UserRepository.UserHasModel(useid, moduleid);
+            return userHas;
+        }
+
+        private Module Copy(Module module)
+        {
+            Module copy = module;
+            copy.IsLocal = true;
+            copy.InheritedFrom = module.ModuleId;
+            copy.Price = 0;
+            return copy;
         }
 
         private AquiredModules CreateUserModule(long userid, long moduleid)

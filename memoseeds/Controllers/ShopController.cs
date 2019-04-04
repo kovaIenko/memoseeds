@@ -85,36 +85,6 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpPost("user/{userid}/get/module/{moduleid}")]
-        public IActionResult GetModule([FromRoute] long userid, [FromRoute] long moduleid)
-        {
-            IActionResult response = Unauthorized();
-            try
-            {
-                if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
-                Module module = ModuleRepository.GetById(moduleid);
-                int moduleCost = module.Price;
-                User user = UserRepository.GetById(userid);
-                if (user.Credits > moduleCost)
-                {
-                    Module copied = Copy(module);
-                    user.Credits -= moduleCost;
-                    //має працювати
-                    user.Aquireds.Add(new AquiredModules() { LastEdit = DateTime.Now, Module = copied, User = user });
-                    UserRepository.Update(user);
-                    UserRepository.Save();
-                    response = Ok(new { result = "You buy module successfully." });
-                }
-                else response = Ok(new { result = "Not enough credits." });
-            }
-            catch (Exception e)
-            {
-                response = Ok(new { e });
-            }
-
-            return response;
-        }
-
         private Dictionary<string, ICollection<string>> SubjectsToDictionary(ICollection<Subject> subjects)
         {
             Dictionary<string, ICollection<string>> map = new Dictionary<string, ICollection<string>>();
@@ -128,23 +98,7 @@ namespace memoseeds.Controllers
             }
             return map;
         }
-
-        /* check if user has this module */
-        private bool IsExist(long useid, long moduleid)
-        {
-            bool userHas = UserRepository.UserHasModel(useid, moduleid);
-            return userHas;
-        }
-
-        private Module Copy(Module module)
-        {
-            Module copy = module;
-            copy.IsLocal = true;
-            copy.InheritedFrom = module.ModuleId;
-            copy.Price = 0;
-            return copy;
-        }
-
+           
         private Dictionary<string, ICollection<Module>> ModulesBySubjects(ICollection<Subject> subjects)
         {
             Dictionary<string, ICollection<Module>> map = new Dictionary<string, ICollection<Module>>();

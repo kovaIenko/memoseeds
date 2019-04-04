@@ -68,7 +68,7 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpGet("user/{userid}/delete/modules/{moduleid}")]
+        [HttpPost("user/{userid}/delete/modules/{moduleid}")]
         public IActionResult DeleteUsersModule([FromRoute] long userid, [FromRoute] long moduleid)
         {
             IActionResult response = Unauthorized();
