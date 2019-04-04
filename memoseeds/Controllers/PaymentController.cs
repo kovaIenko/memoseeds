@@ -1,6 +1,5 @@
 using memoseeds.Repositories.Purchase.DataConfig;
 using memoseeds.Repositories.Purchase.Requests;
-using memoseeds.Database;
 
 using System.Collections.Generic;
 using System.IO;
@@ -9,23 +8,29 @@ using Newtonsoft.Json;
 using Stripe;
 using System;
 
-using Microsoft.AspNetCore.Authorization;
 using memoseeds.Repositories;
 using memoseeds.Models.Entities;
 
 
 namespace memoseeds.Controllers
 {
-    //[Authorize]
     [Route("purchase")]
     [ApiController]
     public class PaymentController : Controller
     {
         private static PurchaseConfig purchaseConfig = null; 
         private static Dictionary<string, List<PurchaseData>> countryToPurchases = null;
+        private static Dictionary<string, PurchaseData> idToPurchase = null;
         private static CustomerService customerService = null;
         private static ChargeService chargeService = null;
         static PaymentController()
+        {
+            readConfigAndData();
+            setupIds(PaymentController.countryToPurchases);
+            setupStripe(PaymentController.purchaseConfig);
+        }
+
+        private static void readConfigAndData()
         {
             string configJSON = null;
             string dataJSON = null;
@@ -46,23 +51,21 @@ namespace memoseeds.Controllers
 
             PaymentController.purchaseConfig = JsonConvert.DeserializeObject<PurchaseConfig>(configJSON);
             PaymentController.countryToPurchases = JsonConvert.DeserializeObject<Dictionary<string, List<PurchaseData>>>(dataJSON);
-
-            setupIds(PaymentController.countryToPurchases);
-            SetupStripe(PaymentController.purchaseConfig);
         }
-
-        private static void setupIds(Dictionary<string, List<PurchaseData>> d)
+        private static void setupIds(Dictionary<string, List<PurchaseData>> countryToPurchases)
         {
-            foreach (string key in d.Keys)
+            PaymentController.idToPurchase = new Dictionary<string, PurchaseData>();
+            foreach (string countryName in countryToPurchases.Keys)
             {
                 int i = -1;
-                foreach (PurchaseData p in d[key])
+                foreach (PurchaseData p in countryToPurchases[countryName])
                 {
-                    p.id = key + (++i);
+                    p.id = countryName + (++i);
+                    PaymentController.idToPurchase.Add(p.id, p);
                 }
             }
         }
-        private static void SetupStripe(PurchaseConfig purchaseConfig)
+        private static void setupStripe(PurchaseConfig purchaseConfig)
         {
             StripeConfiguration.SetApiKey(purchaseConfig.stripeConfig.secretKey);
 
@@ -70,33 +73,21 @@ namespace memoseeds.Controllers
             chargeService = new ChargeService();
         }
 
-        private static PurchaseData FindPurchaseData(Dictionary<string, List<PurchaseData>> d, string id)
+        private IUserRepository userRepository = null;
+        public PaymentController(IUserRepository userRepository)
         {
-            foreach (string key in d.Keys)
-            {
-                foreach (PurchaseData p in d[key])
-                {
-                    if(p.id == id)
-                    {
-                        return p;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private IUserRepository UserRepository;
-        public PaymentController(IUserRepository UserRepository)
-        {
-            this.UserRepository = UserRepository;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("options")]
-        public ActionResult ProvideOptions(UserInfo info)
+        public ActionResult provideOptions(UserInfo info)
         {
             string countryRes = info.country;
-            if (info.country == null || info.country.Length < 1)
-            {
+            if (
+                countryRes == null ||
+                countryRes.Length < 1 ||
+                !countryToPurchases.ContainsKey(countryRes)
+            ) {
                 countryRes = purchaseConfig.defaultCountry;
             }
 
@@ -106,18 +97,26 @@ namespace memoseeds.Controllers
             );
 
             string resInfo = JsonConvert.SerializeObject(purchasesInfo);
-            ActionResult res = new ContentResult { Content = resInfo, ContentType = "application/json" };
+            ActionResult res = new ContentResult {
+                Content = resInfo,
+                ContentType = "application/json"
+            };
 
             return res;
         }
 
         [HttpPost("checkout")]
-        public ActionResult TryCheckout(CheckoutInfo info)
+        public ActionResult tryCheckout(CheckoutInfo info)
         {
-            string id = info.purchaseId ?? purchaseConfig.defaultPurchaseId;
-            PurchaseData purchase = FindPurchaseData(PaymentController.countryToPurchases, id);
+            ActionResult res = null;
 
-            ActionResult response = Unauthorized();
+            string purchaseId = info.purchaseId;
+            if(!PaymentController.idToPurchase.ContainsKey(purchaseId))
+            {
+                purchaseId = PaymentController.purchaseConfig.defaultPurchaseId;
+            }
+            PurchaseData purchase = PaymentController.idToPurchase[purchaseId];
+
             try
             {
                 var customer = customerService.Create(new CustomerCreateOptions
@@ -129,30 +128,35 @@ namespace memoseeds.Controllers
                 var charge = chargeService.Create(new ChargeCreateOptions
                 {
                     Amount = purchase.price.amount,
-                    Description = purchase.name,
                     Currency = purchase.price.currency,
+                    Description = purchase.name,
                     CustomerId = customer.Id
                 });
 
-                if(charge != null)
-                {
-                    if (charge.Paid)
-                    { 
-                        User user =  UserRepository.GetById(info.userId);
-                        user.Credits += purchase.credits;
-                        UserRepository.Insert(user);
-                    }
-
-                    string chargeString = JsonConvert.SerializeObject(charge);
-                    response = new ContentResult { Content = chargeString, ContentType = "application/json" };
+                if (
+                    charge != null && 
+                    charge.Paid
+                ) { 
+                    User user = userRepository.GetById(info.userId);
+                    user.Credits += purchase.credits;
+                    userRepository.Insert(user);
                 }
 
+                string chargeString = JsonConvert.SerializeObject(charge);
+                res = new ContentResult {
+                    Content = chargeString,
+                    ContentType = "application/json"
+                };
             } catch(Exception e)
             {
-                response = Ok(new { e });
+                res = new ContentResult {
+                    Content = JsonConvert.SerializeObject(e),
+                    ContentType = "application/json",
+                    StatusCode = 500
+                };
             }
 
-            return response;
+            return res;
         }
     }
 }
