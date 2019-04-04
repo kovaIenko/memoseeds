@@ -71,9 +71,8 @@ namespace memoseeds.Repositories
             return updated;
         }
 
-        public void Delete(long Id)
+        public void Delete(Module entity)
         {
-            Module entity = context.Modules.Find(Id);
             context.Modules.Remove(entity);
         }
 

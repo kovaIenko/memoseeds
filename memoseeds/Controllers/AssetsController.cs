@@ -36,12 +36,12 @@ namespace memoseeds.Controllers
                 ICollection<Module> myModels = ModalsFromAquiredModules(myAquiredModules);
                 ICollection<Module> models = ModuleRepository.GetModulesBySubString(str);
                 response = Ok(new { MyModels = myModels, NonLocal = models });
-                return response;
             }
             catch (Exception e)
             {
-                return Ok(new { e });
+                response =  BadRequest(new { e });
             }
+            return response;
         }
 
         private ICollection<Module> ModalsFromAquiredModules(ICollection<AquiredModules> myModelsUsers)
@@ -53,10 +53,37 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("user/{id}/modules")]
-        public JsonResult GetModules([FromRoute] long id)
+        public IActionResult GetModules([FromRoute] long id)
         {
-            ICollection<AquiredModules> modules = UserRepository.GetModulesByUser(id);
-            return Json(modules);
+            IActionResult response = Unauthorized();
+            try
+            {
+                ICollection<AquiredModules> modules = UserRepository.GetModulesByUser(id);
+                response = Ok(new { modules });
+            }
+            catch(Exception e)
+            {
+                response = BadRequest(new {e});
+            }
+            return response;
+        }
+
+        [HttpGet("user/{userid}/delete/modules/{moduleid}")]
+        public IActionResult DeleteUsersModule([FromRoute] long userid, [FromRoute] long moduleid)
+        {
+            IActionResult response = Unauthorized();
+            try
+            {
+                AquiredModules aquiredModule = UserRepository.GetAquiredByUserAndModule(userid, moduleid);
+                UserRepository.DeleteUsersModule(aquiredModule);
+                ModuleRepository.Delete(aquiredModule.Module);
+                response = Ok(new { result = "The module was deleted successfully." });
+            }
+            catch (Exception e)
+            {
+                response = BadRequest(new { e });
+            }
+            return response;
         }
 
         [HttpGet("user/{userid}/modules/{moduleid}")]

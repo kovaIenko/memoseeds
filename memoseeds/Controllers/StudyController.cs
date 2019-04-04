@@ -24,8 +24,7 @@ namespace memoseeds.Controllers
 
         [HttpPost("api/getModulesOfUser")]
         public JsonResult GetModulesOfUser([FromBody] long id)
-        {
-            
+        {          
             User user = UserRepository.GetById(id);
             List<Module> res = new List<Module>();
             foreach(AquiredModules x in user.Aquireds){

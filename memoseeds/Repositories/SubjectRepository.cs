@@ -19,10 +19,9 @@ namespace memoseeds.Repositories
             this.context = context;
         }
 
-        public void Delete(long subjectId)
-        {
-            Subject entity = context.Subjects.Find(subjectId);
-            context.Subjects.Remove(entity);
+        public void Delete(Subject entity)
+        { 
+           context.Subjects.Remove(entity);
         }
 
         public void Dispose()

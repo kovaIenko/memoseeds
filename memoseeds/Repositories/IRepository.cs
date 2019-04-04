@@ -6,7 +6,7 @@ namespace memoseeds.Repositories
 
         T GetById(long id);
         T Insert(T entity);
-        void Delete(long Id);
+        void Delete(T entity);
         T Update(T entity);
         void Save(); 
     }

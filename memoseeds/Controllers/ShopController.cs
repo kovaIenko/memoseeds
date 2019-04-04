@@ -76,8 +76,7 @@ namespace memoseeds.Controllers
             try
             {
                 ICollection<Subject> subjects = SubjectRepository.GetSubjectsWithCategories();
-                Dictionary<string, ICollection<string>> getDictionary = SubjectsToDictionary(subjects);
-                response = Ok(new { getDictionary });
+                response = Ok(value: SubjectsToDictionary(subjects));
             }
             catch (Exception e)
             {
@@ -121,10 +120,11 @@ namespace memoseeds.Controllers
             Dictionary<string, ICollection<string>> map = new Dictionary<string, ICollection<string>>();
             foreach (Subject s in subjects)
             {
-                map.Add(s.Name, new List<string>());
-                ICollection<Category> categories = s.Categories;
-                foreach (Category c in categories)
-                    map[s.Name].Add(c.Name);
+                    map.Add(s.Name, new List<string>());
+                    ICollection<Category> categories = s.Categories;
+                    foreach (Category c in categories)
+                        map[s.Name].Add(c.Name);
+            
             }
             return map;
         }

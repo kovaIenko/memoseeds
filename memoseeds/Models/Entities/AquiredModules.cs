@@ -21,7 +21,7 @@ namespace memoseeds.Models.Entities
 
         [Column("module")]
         [JsonIgnore]
-        public long? ModuleId { get; set; }
+        public long ModuleId { get; set; }
         public Module Module { get; set; }
 
         [Column("last_edit")]

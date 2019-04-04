@@ -16,5 +16,8 @@ namespace memoseeds.Repositories
         Byte[] getUserImage(long id);
         ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str);
         AquiredModules InsertUserModule(AquiredModules entity);
+        void DeleteUsersModule(AquiredModules entity);
+        AquiredModules GetAquiredByUserAndModule(long userId, long moduleId);
+        
     }
 }

@@ -1,7 +1,7 @@
 {
   "Ukraine": [
     {
-      "credits": 500,
+      "credits": 100,
       "name": "Clever goat",
       "price": {
         "amount": 100,
@@ -9,7 +9,7 @@
       }
     },
     {
-      "credits": 1000,
+      "credits": 100,
       "name": "Smart hare",
       "price": {
         "amount": 190,
@@ -25,7 +25,7 @@
       }
     },
     {
-      "credits": 4000,
+      "credits": 300,
       "name": "Smart hare",
       "price": {
         "amount": 650,
@@ -36,7 +36,7 @@
 
   "USA": [
     {
-      "credits": 500,
+      "credits": 200,
       "name": "Clever goat",
       "price": {
         "amount": 10,
@@ -44,7 +44,7 @@
       }
     },
     {
-      "credits": 1000,
+      "credits": 200,
       "name": "Smart hare",
       "price": {
         "amount": 19,
@@ -52,7 +52,7 @@
       }
     },
     {
-      "credits": 2000,
+      "credits": 100,
       "name": "Smart hare",
       "price": {
         "amount": 38,
@@ -60,7 +60,7 @@
       }
     },
     {
-      "credits": 4000,
+      "credits": 300,
       "name": "Smart hare",
       "price": {
         "amount": 65,
