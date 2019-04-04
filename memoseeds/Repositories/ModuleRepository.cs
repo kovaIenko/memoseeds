@@ -74,6 +74,7 @@ namespace memoseeds.Repositories
         public void Delete(Module entity)
         {
             context.Modules.Remove(entity);
+            context.SaveChanges();
         }
 
         public Module GetModuleWithTerms(long moduleid)

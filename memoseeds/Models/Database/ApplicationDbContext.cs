@@ -19,6 +19,14 @@ namespace memoseeds.Database
         public DbSet<Completion> Completions { get; set; }
         public DbSet<Collector> Collectors { get; set; }
         public DbSet<AquiredModules> AquiredModules { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Term>()
+                .HasOne(p => p.Module)
+                .WithMany(t => t.Terms)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
 

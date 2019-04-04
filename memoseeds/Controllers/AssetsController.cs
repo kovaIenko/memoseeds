@@ -75,6 +75,7 @@ namespace memoseeds.Controllers
             try
             {
                 AquiredModules aquiredModule = UserRepository.GetAquiredByUserAndModule(userid, moduleid);
+                if (aquiredModule == null) throw new NullReferenceException("User doesn't have this module.");
                 UserRepository.DeleteUsersModule(aquiredModule);
                 ModuleRepository.Delete(aquiredModule.Module);
                 response = Ok(new { result = "The module was deleted successfully." });
@@ -87,10 +88,19 @@ namespace memoseeds.Controllers
         }
 
         [HttpGet("user/{userid}/modules/{moduleid}")]
-        public JsonResult GetFullModuleByUser([FromRoute] long userid, [FromRoute] long moduleid)
+        public IActionResult GetFullModuleByUser([FromRoute] long userid, [FromRoute] long moduleid)
         {
-            Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
-            return Json(module);
+            IActionResult response = Unauthorized();
+            try
+            {
+                Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
+                response = Ok(value: module);
+            }
+            catch(Exception e)
+            {
+                response = BadRequest(new { e });
+            }
+            return response;
         }
 
         public class UserData
