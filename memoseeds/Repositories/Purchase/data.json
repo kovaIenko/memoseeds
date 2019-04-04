@@ -17,18 +17,18 @@
       }
     },
     {
-      "credits": 1000,
+      "credits": 2000,
       "name": "Smart hare",
       "price": {
-        "amount": 190,
+        "amount": 380,
         "currency": "uah"
       }
     },
     {
-      "credits": 1000,
+      "credits": 4000,
       "name": "Smart hare",
       "price": {
-        "amount": 190,
+        "amount": 650,
         "currency": "uah"
       }
     }
@@ -52,18 +52,18 @@
       }
     },
     {
-      "credits": 1000,
+      "credits": 2000,
       "name": "Smart hare",
       "price": {
-        "amount": 19,
+        "amount": 38,
         "currency": "usd"
       }
     },
     {
-      "credits": 1000,
+      "credits": 4000,
       "name": "Smart hare",
       "price": {
-        "amount": 19,
+        "amount": 65,
         "currency": "usd"
       }
     }

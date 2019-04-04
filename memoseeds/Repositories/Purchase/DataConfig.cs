@@ -1,4 +1,6 @@
-﻿namespace memoseeds.Repositories.Purchase.DataConfig
+﻿using System.Collections.Generic;
+
+namespace memoseeds.Repositories.Purchase.DataConfig
 {
     public class StripeConfig
     {
@@ -19,15 +21,18 @@
         public string defaultCountry { get; private set; }
         public string defaultPurchaseId { get; private set; }
         public StripeConfig stripeConfig { get; private set; }
+        public Dictionary<string, int> currencyToMultiplier { get; private set; }
 
         public PurchaseConfig(
             string defaultCountry, 
             string defaultPurchaseId, 
-            StripeConfig stripeConfig
+            StripeConfig stripeConfig,
+            Dictionary<string, int> currencyToMultiplier
         ) {
             this.defaultCountry = defaultCountry;
             this.defaultPurchaseId = defaultPurchaseId;
             this.stripeConfig = stripeConfig;
+            this.currencyToMultiplier = currencyToMultiplier;
         }
     }
 

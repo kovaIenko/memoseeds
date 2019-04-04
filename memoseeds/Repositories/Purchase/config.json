@@ -4,6 +4,11 @@
 
   "stripeConfig": {
     "publishableKey": "pk_test_ob6s7KZxZU1mouJbbsuFBjEe",
-    "secretKey": "pk_test_ob6s7KZxZU1mouJbbsuFBjEe"
+    "secretKey": "sk_test_reXBr3o6kN2KNTqu1cZhbdw4"
+  },
+
+  "currencyToMultiplier": {
+    "uah": 100,
+    "usd": 100
   }
 }

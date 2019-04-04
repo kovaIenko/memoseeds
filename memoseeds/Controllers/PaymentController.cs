@@ -72,6 +72,10 @@ namespace memoseeds.Controllers
             customerService = new CustomerService();
             chargeService = new ChargeService();
         }
+        private static int getUnitMultiplier(PurchaseData purchaseData)
+        {
+            return PaymentController.purchaseConfig.currencyToMultiplier[purchaseData.price.currency];
+        }
 
         private IUserRepository userRepository = null;
         public PaymentController(IUserRepository userRepository)
@@ -125,9 +129,11 @@ namespace memoseeds.Controllers
                     SourceToken = info.sourceToken
                 });
 
+                var amountMultiplier = getUnitMultiplier(purchase);
+
                 var charge = chargeService.Create(new ChargeCreateOptions
                 {
-                    Amount = purchase.price.amount,
+                    Amount = purchase.price.amount*amountMultiplier,
                     Currency = purchase.price.currency,
                     Description = purchase.name,
                     CustomerId = customer.Id
