@@ -121,11 +121,11 @@ namespace memoseeds.Repositories
              return entity;
         }
 
-<<<<<<< HEAD
         public Byte[] getUserImage(long id)
         {
             return GetById(id).Img;
-=======
+        }
+
         public void DeleteUsersModule(AquiredModules entity)
         {
             context.AquiredModules.Remove(entity);
@@ -135,7 +135,6 @@ namespace memoseeds.Repositories
         public AquiredModules GetAquiredByUserAndModule(long userId, long moduleId)
         {
             return context.AquiredModules.Include(d=>d.Module).FirstOrDefault(f=>(f.UserId==userId&&f.ModuleId==moduleId));
->>>>>>> 5b5e11d... fixing some problems with categories; deleting module
         }
     }
 }
