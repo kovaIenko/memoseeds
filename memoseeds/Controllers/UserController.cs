@@ -90,18 +90,23 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
-                if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
-                Module module = ModuleRepository.GetById(moduleid);
+                 if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
+                 Module module = ModuleRepository.GetById(moduleid);
                 int moduleCost = module.Price;
+
                 User user = UserRepository.GetById(userid);
                 if (user.Credits >= moduleCost)
                 {
                     Module copied = Copy(module);
                     user.Credits -= moduleCost;
+                  
+                    ModuleRepository.Insert(copied);
+                    copied.Terms = CopyTerms(module.Terms, copied.ModuleId);
                     //має працювати
-                    user.Aquireds.Add(new AquiredModules() { LastEdit = DateTime.Now, Module = copied, User = user });
-                    UserRepository.Update(user);
-                    UserRepository.Save();
+                    Module added = ModuleRepository.Update(copied);
+
+                    AquiredModules aquiredModules = CreateUserModule(userid, added.ModuleId);
+                    UserRepository.InsertUserModule(aquiredModules);
                     response = Ok(new { result = "success", moduleId = copied.ModuleId });
                 }
                 else response = Ok(new { result = "Not enough credits." });
@@ -122,11 +127,17 @@ namespace memoseeds.Controllers
 
         private Module Copy(Module module)
         {
-            Module copy = module;
-            copy.IsLocal = true;
-            copy.InheritedFrom = module.ModuleId;
-            copy.Price = 0;
-            return copy;
+            return new Module()
+            {
+                CategoryId = module.CategoryId,
+                Name = module.Name,
+
+                ModuleId = default(long),
+                UserId = module.UserId,
+                IsLocal = true,
+                InheritedFrom = module.ModuleId,
+                Price = 0
+            };
         }
 
         private AquiredModules CreateUserModule(long userid, long moduleid)
@@ -160,11 +171,27 @@ namespace memoseeds.Controllers
             {
                 dictionary.Add(new Term()
                 {
+                    ModuleId = moduleid,
                     Name = str,
                     Definition = keyValue[str],
                 });
             }
             return dictionary;
+        }
+
+        public ICollection<Term> CopyTerms(ICollection<Term> terms, long moduleId)
+        {
+            ICollection<Term> coppied = new List<Term>();
+            foreach (Term t in terms)
+            {
+                coppied.Add(new Term()
+                {
+                    ModuleId = moduleId,
+                    Name = t.Name,
+                    Definition =t.Definition
+                });
+            }
+            return coppied;
         }
 
         public class ModuleData
