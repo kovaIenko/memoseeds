@@ -33,8 +33,7 @@ namespace memoseeds.Controllers
             try
             {
                 ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
-                subjects = ConfigModules.DeleteLocalModules(subjects);
-                response = Ok(subjects);
+                response = Ok(ModulesBySubjects(subjects));
             }
             catch (Exception e)
             {
@@ -113,7 +112,8 @@ namespace memoseeds.Controllers
                 {
                     ICollection<Module> modules = c.Modules;
                     foreach (Module m in modules)
-                         map[s.Name].Add(m);
+                        if (!m.IsLocal)
+                            map[s.Name].Add(m);
                 }
             }
             return map;

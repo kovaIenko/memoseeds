@@ -49,6 +49,30 @@ namespace memoseeds.Controllers
             return response;
         }
 
+        [HttpPost("update/module")]
+        public IActionResult UpdateModule([FromBody] ModuleData module)
+        {
+            IActionResult response = Unauthorized();
+            try
+            {
+                Category category = SubjectRepository.GetCategoryName(module.Category);
+                Module created = CreateModule(module, category.CategoryId);
+                ModuleRepository.Insert(created);
+
+                created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
+                Module added = ModuleRepository.Update(created);
+                AquiredModules aquiredModules = CreateUserModule(module.Author, created.ModuleId);
+
+                UserRepository.InsertUserModule(aquiredModules);
+                response = Ok(new { moduleId = added.ModuleId });
+            }
+            catch (Exception e)
+            {
+                response = Ok(new { e });
+            }
+            return response;
+        }
+
         [HttpPost("{userid}/has/module/{moduleid}")]
         public IActionResult UserHasModule([FromRoute] long userid, [FromRoute] long moduleid)
         {
@@ -90,18 +114,14 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
-
                  if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
                  Module module = ModuleRepository.GetById(moduleid);
                 int moduleCost = module.Price;
-
                 User user = UserRepository.GetById(userid);
-
                 if (user.Credits >= moduleCost)
                 {
                     Module copied = Copy(module);
-                    user.Credits -= moduleCost;
-                  
+                    user.Credits -= moduleCost;           
                     ModuleRepository.Insert(copied);
                     copied.Terms = CopyTerms(module.Terms, copied.ModuleId);
                     //має працювати
