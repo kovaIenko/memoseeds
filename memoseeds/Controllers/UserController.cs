@@ -35,7 +35,7 @@ namespace memoseeds.Controllers
                 Module created = CreateModule(module, category.CategoryId);
                 ModuleRepository.Insert(created);
 
-                created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
+                created.Terms = AddTermsFromIDict(null, module.Terms, created.ModuleId);
                 Module added = ModuleRepository.Update(created);
                 AquiredModules aquiredModules = CreateUserModule(module.Author, created.ModuleId);
 
@@ -50,21 +50,19 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("update/module")]
-        public IActionResult UpdateModule([FromBody] ModuleData module)
+        public IActionResult UpdateModule([FromBody] EditModuleData module)
         {
             IActionResult response = Unauthorized();
             try
             {
+                if(!IsExist(module.UserId, module.ModuleId)) return Ok(new { result = "User doesn't have this module." });
                 Category category = SubjectRepository.GetCategoryName(module.Category);
-                Module created = CreateModule(module, category.CategoryId);
-                ModuleRepository.Insert(created);
+                Module old = ModuleRepository.GetModuleWithTerms(module.ModuleId);
 
-                created.Terms = GetTermFromIDict(module.Terms, created.ModuleId);
-                Module added = ModuleRepository.Update(created);
-                AquiredModules aquiredModules = CreateUserModule(module.Author, created.ModuleId);
+                old.Terms = AddTermsFromIDict(old.Terms, module.Terms, old.ModuleId);
+                Module updated = ModuleRepository.Update(old);
 
-                UserRepository.InsertUserModule(aquiredModules);
-                response = Ok(new { moduleId = added.ModuleId });
+                response = Ok(new { result = "success", moduleId = updated.ModuleId });
             }
             catch (Exception e)
             {
@@ -72,6 +70,24 @@ namespace memoseeds.Controllers
             }
             return response;
         }
+
+        private ICollection<Term> AddTermsFromIDict(ICollection<Term> current, IDictionary<string, string> keyValue, long moduleid)
+        {
+            ICollection<Term> dictionary = null;
+            if (current == null) dictionary = new List<Term>();
+            else dictionary = current;
+            foreach (string str in keyValue.Keys)
+            {
+                dictionary.Add(new Term()
+                {
+                    ModuleId = moduleid,
+                    Name = str,
+                    Definition = keyValue[str],
+                });
+            }
+            return dictionary;
+        }
+
 
         [HttpPost("{userid}/has/module/{moduleid}")]
         public IActionResult UserHasModule([FromRoute] long userid, [FromRoute] long moduleid)
@@ -239,5 +255,28 @@ namespace memoseeds.Controllers
             public IDictionary<string, string> Terms { set; get; }
         }
 
+        public class EditModuleData
+        {
+            [Required(ErrorMessage = "User id not specified")]
+            public long UserId { set; get; }
+
+            [Required(ErrorMessage = "Category id not specified")]
+            public long ModuleId { set; get; }
+
+            [Required(ErrorMessage = "Category name not specified")]
+            public string Category { set; get; }
+
+            [Required(ErrorMessage = "Name not specified")]
+            public string Name { set; get; }
+
+            [Required(ErrorMessage = "Enviroment not specified")]
+            public bool IsLocal { set; get; }
+
+            [Required(ErrorMessage = "Price not specified")]
+            public int Price { set; get; }
+
+            [Required(ErrorMessage = "Terms not specified")]
+            public IDictionary<string, string> Terms { set; get; }
+        }
     }
 }
