@@ -145,7 +145,7 @@ namespace memoseeds.Controllers
                 ) { 
                     User user = userRepository.GetById(info.userId);
                     user.Credits += purchase.credits;
-                    userRepository.Insert(user);
+                    userRepository.Update(user);
                 }
 
                 string chargeString = JsonConvert.SerializeObject(charge);
