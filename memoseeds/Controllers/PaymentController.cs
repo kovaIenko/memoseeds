@@ -164,5 +164,30 @@ namespace memoseeds.Controllers
 
             return res;
         }
+
+        [HttpPost("option")]
+        public ActionResult provideOption(PurchaseInfo info)
+        {
+            ActionResult res = null;
+
+            string purchaseId = info.purchaseId;
+            if (PaymentController.idToPurchase.ContainsKey(purchaseId))
+            {
+                PurchaseData purchase = PaymentController.idToPurchase[purchaseId];
+                string purchaseString = JsonConvert.SerializeObject(purchase);
+                res = new ContentResult {
+                    Content = purchaseString,
+                    ContentType = "application/json"
+                };
+            } else
+            {
+                res = new ContentResult {
+                    Content = "No purchase with id: [" + purchaseId + "]",
+                    ContentType = "application/json"
+                };
+            }
+
+            return res;
+        }
     }
 }

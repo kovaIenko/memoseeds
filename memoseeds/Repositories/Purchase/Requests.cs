@@ -48,4 +48,14 @@ namespace memoseeds.Repositories.Purchase.Requests
         }
     }
 
+    public class PurchaseInfo
+    {
+        public string purchaseId { get; private set; }
+
+        public PurchaseInfo(string purchaseId)
+        {
+            this.purchaseId = purchaseId;
+        }
+    }
+
 }
