@@ -85,7 +85,9 @@ namespace memoseeds.Repositories
 
         public bool UserHasModel(long userId, long moduleId)
         {
-            AquiredModules module = context.AquiredModules.Where(d=>d.UserId==userId).FirstOrDefault(f => f.Module.InheritedFrom == moduleId || f.Module.UserId==userId);
+            AquiredModules module = context.AquiredModules.Where(d => d.UserId == userId&& d.ModuleId == moduleId).
+            FirstOrDefault();
+
             return module != null;
         }
 

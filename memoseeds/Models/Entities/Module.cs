@@ -40,7 +40,7 @@ namespace memoseeds.Models.Entities
         public long InheritedFrom { get; set; }
 
         [Required]
-        public virtual ICollection<Term> Terms { get; set; }
+        public ICollection<Term> Terms { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<AquiredModules> Aquireds { get; set; }

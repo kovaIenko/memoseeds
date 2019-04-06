@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using memoseeds.Models;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
@@ -31,9 +32,9 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
-                ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
-                Dictionary<string, ICollection<Module>> dictionary = ModulesBySubjects(subjects);
-                response = Ok(dictionary);
+                ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
+                subjects = ConfigModules.DeleteLocalModules(subjects);
+                response = Ok(subjects);
             }
             catch (Exception e)
             {
@@ -41,6 +42,8 @@ namespace memoseeds.Controllers
             }
             return response;
         }
+
+      
 
         [HttpGet("modules/{moduleid}")]
         public IActionResult GetFullModule([FromRoute] long moduleid)
@@ -110,7 +113,7 @@ namespace memoseeds.Controllers
                 {
                     ICollection<Module> modules = c.Modules;
                     foreach (Module m in modules)
-                        map[s.Name].Add(m);
+                         map[s.Name].Add(m);
                 }
             }
             return map;

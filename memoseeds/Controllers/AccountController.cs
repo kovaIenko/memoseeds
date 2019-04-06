@@ -68,8 +68,6 @@ namespace memoseeds.Controllers
             else
                 response = Ok(new { Error = "User with that username not found" });
             return response;
-
-            return response;
         }
 
         private string GenerateJSONWebToken(User userInfo)

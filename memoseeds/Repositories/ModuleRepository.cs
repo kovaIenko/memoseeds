@@ -41,7 +41,7 @@ namespace memoseeds.Repositories
         public Module GetById(long id)
         {
             /* треба протестувати*/
-            return context.Modules.Include(g => g.Terms).First();
+            return context.Modules.Include(g => g.Terms).FirstOrDefault(d => d.ModuleId == id);
         }
 
         public ICollection<Module> GetPublicModules()
@@ -75,6 +75,12 @@ namespace memoseeds.Repositories
         {
             context.Modules.Remove(entity);
             context.SaveChanges();
+        }
+
+        public ICollection<Module> GetNonLocalModules()
+        {
+            ICollection<Module> modules = context.Modules.Where(d => !d.IsLocal).Include(e => e.Terms).Include(d=>d.Category).ThenInclude(w=>w.Subject).ToList();
+            return modules;
         }
 
         public Module GetModuleWithTerms(long moduleid)

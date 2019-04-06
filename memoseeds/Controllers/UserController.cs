@@ -90,11 +90,13 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
+
                  if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
                  Module module = ModuleRepository.GetById(moduleid);
                 int moduleCost = module.Price;
 
                 User user = UserRepository.GetById(userid);
+
                 if (user.Credits >= moduleCost)
                 {
                     Module copied = Copy(module);
@@ -131,7 +133,6 @@ namespace memoseeds.Controllers
             {
                 CategoryId = module.CategoryId,
                 Name = module.Name,
-
                 ModuleId = default(long),
                 UserId = module.UserId,
                 IsLocal = true,
@@ -160,7 +161,7 @@ namespace memoseeds.Controllers
                 IsLocal = module.IsLocal,
                 Name = module.Name,
                 Price = module.Price,
-                UserId = module.Author,
+                UserId = module.Author
             };
         }
 

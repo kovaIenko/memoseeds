@@ -10,5 +10,6 @@ namespace memoseeds.Repositories.Purchase
         Module GetModuleWithTerms(long moduleid);
         ICollection<Module> GetWithoutLocalWithTerms();
         ICollection<Module> GetModulesBySubString(string str);
+        ICollection<Module> GetNonLocalModules();
     }
 }

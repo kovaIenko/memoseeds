@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using memoseeds.Models;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
@@ -29,7 +30,8 @@ namespace memoseeds.Controllers
         public JsonResult FilterCase([FromBody] Filter cases)
         {
             string _default = "default";
-            ICollection<Subject> subjects = SubjectRepository.GetWithoutLocalModulesTerms();
+            ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
+          //  subjects = ConfigModules.DeleteLocalModules(subjects);
             ICollection<Subject> result = new List<Subject>();
             if (!cases.Subject.Equals(_default))
             {             

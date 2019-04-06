@@ -7,10 +7,11 @@ namespace memoseeds.Repositories
     public interface ISubjectRepository : IDisposable
     {
 
-        ICollection<Subject> GetWithoutLocalModules();
-        ICollection<Subject> GetWithoutLocalModulesTerms();
+        ICollection<Subject> GetModules();
+        ICollection<Subject> GetModulesTerms();
         ICollection<Subject> GetSubjectsWithCategories();
         Subject GetSubjectName(string name);
         Category GetCategoryName(string name);
+
     }
 }

@@ -11,6 +11,7 @@ namespace memoseeds.Repositories
 {
     public class SubjectRepository : ISubjectRepository, IRepository<Subject>, IDisposable
     {
+        private const bool V = false;
         private bool disposed = false;
         private ApplicationDbContext context;
 
@@ -68,11 +69,18 @@ namespace memoseeds.Repositories
             return context.Subjects.Find(id);
         }
 
-        public ICollection<Subject> GetWithoutLocalModulesTerms()
+        ICollection<Subject> ISubjectRepository.GetModulesTerms()
         {
-            ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).
-            ThenInclude(r => r.Modules)
-                .ThenInclude(f => f.Terms).ToList();
+             ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).ThenInclude(e => e.Modules).ThenInclude(d => d.Terms).ToList();
+            //IEnumerable<Subject> scoreQuery =
+            //from s in context.Subjects.Include(d=>d.Categories)
+            //join c in context.Categories.Include(s=>s.Modules) on s.SubjectId equals c.SubjectId
+            //join m in context.Modules.Include(e=>e.Terms on c.CategoryId equals m.CategoryId
+            //where m.IsLocal == false
+            //select s;
+          //  ICollection<Subject> subjects = scoreQuery.ToList();
+            
+
             return subjects;
         }
 
@@ -82,7 +90,7 @@ namespace memoseeds.Repositories
             return subjects;
         }
 
-        public ICollection<Subject> GetWithoutLocalModules()
+        public ICollection<Subject> GetModules()
         {
             ICollection<Subject> subjects = context.Subjects.Include(d => d.Categories).
             ThenInclude(r => r.Modules).ToList();
