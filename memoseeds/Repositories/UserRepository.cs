@@ -100,7 +100,7 @@ namespace memoseeds.Repositories
         public ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str)
         {
             ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).
-            ThenInclude(r => r.Terms).Where(q => q.Module.Name.Contains(str)).Where(g => g.UserId == id).ToList();
+            ThenInclude(r => r.Terms).Where(k => k.Module.Name.IndexOf(str, StringComparison.OrdinalIgnoreCase) != -1).Where(g => g.UserId == id).ToList();
             return modules;
         }
 
