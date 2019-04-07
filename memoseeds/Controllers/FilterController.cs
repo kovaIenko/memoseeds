@@ -31,7 +31,7 @@ namespace memoseeds.Controllers
         {
             string _default = "default";
             ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
-          //  subjects = ConfigModules.DeleteLocalModules(subjects);
+            subjects = ConfigModules.DeleteLocalModules(subjects);
             ICollection<Subject> result = new List<Subject>();
             if (!cases.Subject.Equals(_default))
             {             
