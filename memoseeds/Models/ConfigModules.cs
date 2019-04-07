@@ -1,11 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using memoseeds.Models.Entities;
+using memoseeds.Repositories;
 
 namespace memoseeds.Models
 {
     public static class ConfigModules
     {
+        //private IUserRepository UserRepository=null;
+
+        //public ConfigModules(IUserRepository UserRepository)
+        //{
+        //    this.UserRepository = UserRepository;
+        //}
+
+
+        //public static bool IsExist(long useid, long moduleid)
+        //{
+        //    bool userHas = UserRepository.UserHasModel(useid, moduleid);
+        //    return userHas;
+        //}
 
         public static ICollection<Subject> DeleteLocalModules(ICollection<Subject> subjects)
         {

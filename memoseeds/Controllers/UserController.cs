@@ -56,7 +56,6 @@ namespace memoseeds.Controllers
             try
             {
                 if(!IsExist(module.UserId, module.ModuleId)) return Ok(new { result = "User doesn't have this module." });
-                Category category = SubjectRepository.GetCategoryName(module.Category);
                 Module old = ModuleRepository.GetModuleWithTerms(module.ModuleId);
 
                 old.Terms = AddTermsFromIDict(old.Terms, module.Terms, old.ModuleId);
@@ -260,11 +259,8 @@ namespace memoseeds.Controllers
             [Required(ErrorMessage = "User id not specified")]
             public long UserId { set; get; }
 
-            [Required(ErrorMessage = "Category id not specified")]
+            [Required(ErrorMessage = "Module id not specified")]
             public long ModuleId { set; get; }
-
-            [Required(ErrorMessage = "Category name not specified")]
-            public string Category { set; get; }
 
             [Required(ErrorMessage = "Name not specified")]
             public string Name { set; get; }

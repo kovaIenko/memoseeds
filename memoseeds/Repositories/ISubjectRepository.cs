@@ -12,6 +12,7 @@ namespace memoseeds.Repositories
         ICollection<Subject> GetSubjectsWithCategories();
         Subject GetSubjectName(string name);
         Category GetCategoryName(string name);
-
+        Category GetCategoryById(long category);
+        Subject GetSubjectById(long subject);
     }
 }
