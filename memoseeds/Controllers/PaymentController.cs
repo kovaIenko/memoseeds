@@ -72,6 +72,39 @@ namespace memoseeds.Controllers
             customerService = new CustomerService();
             chargeService = new ChargeService();
         }
+        private static PurchaseData getPurchaseById(string purchaseId)
+        {
+            PurchaseData res = null;
+
+            if (!PaymentController.idToPurchase.ContainsKey(purchaseId))
+            {
+                purchaseId = PaymentController.purchaseConfig.defaultPurchaseId;
+            }
+            res = PaymentController.idToPurchase[purchaseId];
+
+            return res;
+        }
+        private static Charge performCharge(CheckoutInfo info, PurchaseData purchase)
+        {
+            Charge res = null;
+
+            var customer = customerService.Create(new CustomerCreateOptions
+            {
+                Email = info.email,
+                SourceToken = info.sourceToken
+            });
+
+            var amountMultiplier = getUnitMultiplier(purchase);
+            var charge = chargeService.Create(new ChargeCreateOptions
+            {
+                Amount = purchase.price.amount * amountMultiplier,
+                Currency = purchase.price.currency,
+                Description = purchase.name,
+                CustomerId = customer.Id
+            });
+
+            return res;
+        }
         private static int getUnitMultiplier(PurchaseData purchaseData)
         {
             return PaymentController.purchaseConfig.currencyToMultiplier[purchaseData.price.currency];
@@ -81,6 +114,27 @@ namespace memoseeds.Controllers
         public PaymentController(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
+        }
+
+        private int updateUserCredits(CheckoutInfo info, PurchaseData purchase, Charge charge)
+        {
+            int res = -1;
+
+            User user = userRepository.GetById(info.userId);
+            res = user.Credits;
+
+            if (
+                charge != null &&
+                charge.Paid
+            )
+            {
+                user.Credits += purchase.credits;
+                userRepository.Update(user);
+
+                res = user.Credits;
+            }
+
+            return res;
         }
 
         [HttpPost("options")]
@@ -114,43 +168,20 @@ namespace memoseeds.Controllers
         {
             ActionResult res = null;
 
-            string purchaseId = info.purchaseId;
-            if(!PaymentController.idToPurchase.ContainsKey(purchaseId))
-            {
-                purchaseId = PaymentController.purchaseConfig.defaultPurchaseId;
-            }
-            PurchaseData purchase = PaymentController.idToPurchase[purchaseId];
-
+            PurchaseData purchase = PaymentController.getPurchaseById(info.purchaseId);
             try
             {
-                var customer = customerService.Create(new CustomerCreateOptions
+                var charge = performCharge(info, purchase);
+                int updatedUserCredits = updateUserCredits(info, purchase, charge);
+
+                dynamic contentRes = new
                 {
-                    Email = info.email,
-                    SourceToken = info.sourceToken
-                });
+                    chargeString = JsonConvert.SerializeObject(charge),
+                    updatedUserCredits = updatedUserCredits
+                };
 
-                var amountMultiplier = getUnitMultiplier(purchase);
-
-                var charge = chargeService.Create(new ChargeCreateOptions
-                {
-                    Amount = purchase.price.amount*amountMultiplier,
-                    Currency = purchase.price.currency,
-                    Description = purchase.name,
-                    CustomerId = customer.Id
-                });
-
-                if (
-                    charge != null && 
-                    charge.Paid
-                ) { 
-                    User user = userRepository.GetById(info.userId);
-                    user.Credits += purchase.credits;
-                    userRepository.Update(user);
-                }
-
-                string chargeString = JsonConvert.SerializeObject(charge);
                 res = new ContentResult {
-                    Content = chargeString,
+                    Content = JsonConvert.SerializeObject(contentRes),
                     ContentType = "application/json"
                 };
             } catch(Exception e)
