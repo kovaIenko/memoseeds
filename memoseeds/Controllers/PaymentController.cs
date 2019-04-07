@@ -95,7 +95,7 @@ namespace memoseeds.Controllers
             });
 
             var amountMultiplier = getUnitMultiplier(purchase);
-            var charge = chargeService.Create(new ChargeCreateOptions
+            res = chargeService.Create(new ChargeCreateOptions
             {
                 Amount = purchase.price.amount * amountMultiplier,
                 Currency = purchase.price.currency,
