@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace memoseeds.Controllers
 {
@@ -93,8 +94,15 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
+
                 Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
-                response = Ok(value: module);
+                long categoryId = (long)module.CategoryId;
+
+                Category category = SubjectRepository.GetCategoryById(categoryId);
+                long subjectId = (long)category.SubjectId;
+                Subject subject = SubjectRepository.GetSubjectById(subjectId);
+
+                response = Ok(new { Subject = subject.Name, Category = category.Name  , Module = module });
             }
             catch(Exception e)
             {
