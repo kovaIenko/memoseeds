@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
@@ -55,10 +56,10 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
-                if(!IsExist(module.UserId, module.ModuleId)) return Ok(new { result = "User doesn't have this module." });
+                if (!IsExist(module.UserId, module.ModuleId)) return Ok(new { result = "User doesn't have this module." });
                 Module old = ModuleRepository.GetModuleWithTerms(module.ModuleId);
 
-                old.Terms = AddTermsFromIDict(old.Terms, module.Terms, old.ModuleId);
+                AddTerms(old.Terms, module.Terms, old.ModuleId);
                 Module updated = ModuleRepository.Update(old);
 
                 response = Ok(new { result = "success", moduleId = updated.ModuleId });
@@ -87,6 +88,31 @@ namespace memoseeds.Controllers
             return dictionary;
         }
 
+        private void AddTerms(ICollection<Term> old, ICollection<Term> terms, long moduleid)
+        {
+            //ICollection<Term> dictionary = new List<Term>();   
+            List<Term> lists = (System.Collections.Generic.List<memoseeds.Models.Entities.Term>)terms;
+
+            foreach (Term t in old)
+            {
+                if (lists.Contains(t))
+                {
+                    Term f = lists.FirstOrDefault(i => i.TermId == t.TermId);
+                    t.Name = f.Name;
+                    t.Definition = f.Definition;
+                }
+            }
+            foreach (Term t in terms)
+            {
+                if (!old.Contains(t))
+                {
+                    if (t.TermId == 0)
+                        t.ModuleId = moduleid;
+                    old.Add(t);
+                }
+            }
+            //return old;
+        }
 
         [HttpPost("{userid}/has/module/{moduleid}")]
         public IActionResult UserHasModule([FromRoute] long userid, [FromRoute] long moduleid)
@@ -129,14 +155,14 @@ namespace memoseeds.Controllers
             IActionResult response = Unauthorized();
             try
             {
-                 if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
-                 Module module = ModuleRepository.GetById(moduleid);
+                if (IsExist(userid, moduleid)) return Ok(new { result = "User has this module." });
+                Module module = ModuleRepository.GetById(moduleid);
                 int moduleCost = module.Price;
                 User user = UserRepository.GetById(userid);
                 if (user.Credits >= moduleCost)
                 {
                     Module copied = Copy(module);
-                    user.Credits -= moduleCost;           
+                    user.Credits -= moduleCost;
                     ModuleRepository.Insert(copied);
                     copied.Terms = CopyTerms(module.Terms, copied.ModuleId);
                     //має працювати
@@ -224,7 +250,7 @@ namespace memoseeds.Controllers
                 {
                     ModuleId = moduleId,
                     Name = t.Name,
-                    Definition =t.Definition
+                    Definition = t.Definition
                 });
             }
             return coppied;
@@ -272,7 +298,7 @@ namespace memoseeds.Controllers
             public int Price { set; get; }
 
             [Required(ErrorMessage = "Terms not specified")]
-            public IDictionary<string, string> Terms { set; get; }
+            public ICollection<Term> Terms { set; get; }
         }
     }
 }

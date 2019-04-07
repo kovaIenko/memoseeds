@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
@@ -22,5 +23,17 @@ namespace memoseeds.Models.Entities
 
         [Column("definition")]
         public string Definition { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var term = obj as Term;
+            return term != null &&
+                   TermId == term.TermId;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(TermId);
+        }
     }
 }
