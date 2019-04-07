@@ -176,8 +176,8 @@ namespace memoseeds.Controllers
 
                 dynamic contentRes = new
                 {
-                    chargeString = JsonConvert.SerializeObject(charge),
-                    updatedUserCredits = updatedUserCredits
+                    charge,
+                    updatedUserCredits
                 };
 
                 res = new ContentResult {
