@@ -41,7 +41,7 @@ namespace memoseeds.Controllers
                 if (!cases.Subject.Equals(_default))
                 {
                     Subject subject = ChooseSubject(subjects, cases.Subject, cases.Category, _default);
-                    if (subject == null) return Ok(new { result = "No modules suitable for these conditions." });
+                    if (subject == null) return Ok(new List<Subject>());
                     result.Add(subject);
                     subjects = result;
                 }
