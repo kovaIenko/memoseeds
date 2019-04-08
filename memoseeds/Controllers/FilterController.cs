@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace memoseeds.Controllers
 {
     [ApiController]
-   // [Authorize]
+    // [Authorize]
     public class FilterController : Controller
     {
         private IModuleRepository ModuleRepository;
@@ -27,24 +27,38 @@ namespace memoseeds.Controllers
         }
 
         [HttpPost("/shop/filter")]
-        public JsonResult FilterCase([FromBody] Filter cases)
+        public IActionResult FilterCase([FromBody] Filter cases)
         {
-            string _default = "default";
-            ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
-          //  subjects = ConfigModules.DeleteLocalModules(subjects);
-            ICollection<Subject> result = new List<Subject>();
-            if (!cases.Subject.Equals(_default))
-            {             
-                result.Add(ChooseSubject(subjects, cases.Subject, cases.Category, _default));
-                subjects = result;
-            }
-            if (cases.IsFree)
-                subjects = CheckIsFree(subjects);
+            IActionResult response = Unauthorized();
 
-            return Json(subjects);
+            string _default = "default";
+            try
+            {
+                ICollection<Subject> subjects = SubjectRepository.GetModulesTerms();
+                subjects = ConfigModules.DeleteLocalModules(subjects);
+
+                ICollection<Subject> result = new List<Subject>();
+                if (!cases.Subject.Equals(_default))
+                {
+                    Subject subject = ChooseSubject(subjects, cases.Subject, cases.Category, _default);
+                    if (subject == null) return Ok(new List<Subject>());
+                    result.Add(subject);
+                    subjects = result;
+                }
+                else response = Ok(new { subjects });
+
+                if (cases.IsFree)
+                    subjects = CheckIsFree(subjects);
+                response = Ok(subjects);
+            }
+            catch (Exception e)
+            {
+                response = BadRequest(new { e });
+            }
+            return response;
         }
 
-        private Subject ChooseSubject(ICollection<Subject> subjects, string sub, string cat,string _default)
+        private Subject ChooseSubject(ICollection<Subject> subjects, string sub, string cat, string _default)
         {
             Subject subject = null;
             foreach (Subject f in subjects)
@@ -53,7 +67,8 @@ namespace memoseeds.Controllers
                     subject = f;
                     break;
                 }
-            if (!cat.Equals(_default))
+
+            if (subject != null && !cat.Equals(_default))
                 subject = ChooseCategory(subject, cat);
 
             return subject;
@@ -63,6 +78,7 @@ namespace memoseeds.Controllers
         {
             ICollection<Category> categories = subject.Categories;
             ICollection<Category> temp = new List<Category>();
+
             foreach (Category c in categories)
             {
                 if (c.Name.Equals(category))
@@ -71,13 +87,14 @@ namespace memoseeds.Controllers
                     break;
                 }
             }
-             subject.Categories = temp;
+
+            subject.Categories = temp;
             return subject;
         }
 
         private ICollection<Subject> CheckIsFree(ICollection<Subject> subjects)
         {
-           ICollection<Subject> result = new List<Subject>();
+            ICollection<Subject> result = new List<Subject>();
             foreach (Subject s in subjects)
             {
                 ICollection<Category> categories = s.Categories;

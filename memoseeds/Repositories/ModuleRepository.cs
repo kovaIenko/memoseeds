@@ -65,7 +65,8 @@ namespace memoseeds.Repositories
 
         public Module Update(Module entity)
         {
-            context.Entry(entity).State = EntityState.Modified;
+            // context.Entry(entity).State = EntityState.Modified;
+            context.Modules.Update(entity);
             Save();
             Module updated = context.Modules.Find(entity.ModuleId);
             return updated;
@@ -97,7 +98,7 @@ namespace memoseeds.Repositories
 
         public ICollection<Module> GetModulesBySubString(string str)
         {
-            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).Where(k => k.Name.Contains(str)).ToList();
+            ICollection<Module> modules = context.Modules.Include(h => h.Terms).Where(d => !d.IsLocal).Where(k => k.Name.IndexOf(str, StringComparison.OrdinalIgnoreCase) !=-1).ToList();
             return modules;
         }
 
