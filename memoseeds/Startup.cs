@@ -42,7 +42,7 @@ namespace memoseeds
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
-                builder => builder.WithOrigins("https://memeseeds.herokuapp.com")
+                builder => builder.WithOrigins("http://localhost:8080", "https://memoseeds-front.herokuapp.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
