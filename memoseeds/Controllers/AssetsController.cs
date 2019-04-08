@@ -96,6 +96,7 @@ namespace memoseeds.Controllers
             {
 
                 Module module = UserRepository.GetModuleWithTerms(userid, moduleid);
+
                 long categoryId = (long)module.CategoryId;
 
                 Category category = SubjectRepository.GetCategoryById(categoryId);

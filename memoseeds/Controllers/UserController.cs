@@ -204,6 +204,7 @@ namespace memoseeds.Controllers
             try
             {
                 bool userHasModule = IsExist(userid, moduleid);
+
                 response = Ok(new { result = userHasModule });
             }
             catch (Exception e)

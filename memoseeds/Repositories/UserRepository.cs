@@ -97,6 +97,12 @@ namespace memoseeds.Repositories
             return modules;
         }
 
+        //public Module GetInheritedModuleFrom(long userid, long moduleid)
+        //{
+        //    return context.AquiredModules.Where
+        //}
+
+
         public ICollection<AquiredModules> GetModulesByUserBySubString(long id, string str)
         {
             ICollection<AquiredModules> modules = context.AquiredModules.Include(f => f.Module).
@@ -107,7 +113,7 @@ namespace memoseeds.Repositories
 
         public Module GetModuleWithTerms(long userId, long moduleId)
         {
-            AquiredModules aquiredModule = context.AquiredModules.Include(r=>r.Module).ThenInclude(y=>y.Terms).Where(q => q.ModuleId == moduleId).FirstOrDefault(g => g.UserId == userId);
+            AquiredModules aquiredModule = context.AquiredModules.Include(r=>r.Module).ThenInclude(y=>y.Terms).Where(q => (q.ModuleId == moduleId || q.Module.InheritedFrom==moduleId)).FirstOrDefault(g => g.UserId == userId);
             return aquiredModule.Module;
         }
 
