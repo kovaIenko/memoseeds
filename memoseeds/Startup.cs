@@ -40,7 +40,10 @@ namespace memoseeds
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
-                builder => builder.WithOrigins("https://memeseeds.herokuapp.com"));
+                builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
             });
      
             services.AddDbContext<Database.ApplicationDbContext>(options =>
