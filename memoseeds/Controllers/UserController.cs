@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using memoseeds.Repositories.Purchase;
@@ -24,86 +23,6 @@ namespace memoseeds.Controllers
             this.ModuleRepository = ModuleRepository;
             this.SubjectRepository = SubjectRepository;
             this.UserRepository = UserRepository;
-        }
-
-        [HttpGet("/{userID}/getImage")]
-        public IActionResult getImage([FromRoute] long userId)
-        {
-            IActionResult response = Unauthorized();
-            try
-            {
-                User a = UserRepository.GetById(userId);
-                if (a != null)
-                {
-                    if (a.Img != null)
-                        return bytesToImage(a.Img);
-                    else
-                        response = Ok(new { err = "User haven't image" });
-                }
-                else
-                    response = Ok(new { err = "User doesn't exist" });
-            }
-            catch
-            {
-                response = Ok(new { err = "User doesn't exist" });
-
-            }
-            return response;
-        }
-
-        [HttpGet("/{userID}/setImage")]
-        public IActionResult setImage([FromRoute] long userId, [FromBody] UploadImageModel data)
-        {
-            IActionResult response = Unauthorized();
-            try
-            {
-                User a = UserRepository.GetById(userId);
-                if(a != null)
-                {
-                    a.Img = stringToBytes(data.ImageData);
-                    UserRepository.Update(a);
-                    return bytesToImage(a.Img);
-                }
-                else
-                    response = Ok(new { err = "User doesn't exist" });
-            }
-            catch
-            {
-                response =  Ok(new { err = "User doesn't exist" });
-
-            }
-            return response;
-        }
-
-        public FileContentResult bytesToImage(Byte[] s)
-        {
-            var imageDataByteArray = s;
-            //When creating a stream, you need to reset the position, without it you will see that you always write files with a 0 byte length. 
-            var imageDataStream = new MemoryStream(imageDataByteArray);
-            imageDataStream.Position = 0;
-
-            //Go and do something with the actual data.
-            //_customerImageService.Upload([...])
-
-            //For the purpose of the demo, we return a file so we can ensure it was uploaded correctly. 
-            //But otherwise you can just return a 204 etc. 
-            return File(imageDataByteArray, "image/png");
-        }
-
-        public Byte[] stringToBytes(string s)
-        {
-            var imageDataByteArray = Convert.FromBase64String(s);
-            //When creating a stream, you need to reset the position, without it you will see that you always write files with a 0 byte length. 
-            var imageDataStream = new MemoryStream(imageDataByteArray);
-            imageDataStream.Position = 0;
-            return imageDataByteArray;
-        }
-
-
-        public FileContentResult stringToImage(string s)
-        {
-           
-            return File(stringToBytes(s), "image/png");
         }
 
         [HttpPost("create/module")]
@@ -354,15 +273,6 @@ namespace memoseeds.Controllers
 
             [Required(ErrorMessage = "Terms not specified")]
             public IDictionary<string, string> Terms { set; get; }
-        }
-
-        public class UploadImageModel
-        {
-            [Required(ErrorMessage = "Description not specified")]
-            public string Description { get; set; }
-
-            [Required(ErrorMessage ="Data not specified")]
-            public string ImageData { get; set; }
         }
     }
 }
