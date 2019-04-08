@@ -31,7 +31,9 @@ namespace memoseeds
         {
             Configuration = configuration;
         }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+        readonly string MyAllowSpecificOrigins = "memoseeds_policy";
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -40,34 +42,29 @@ namespace memoseeds
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
-                builder => builder.AllowAnyOrigin()
+                builder => builder.WithOrigins("https://memeseeds.herokuapp.com")
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
-
-            //services.Configure<MvcOptions>(options =>
-            //{
-            //    options.Filters.Add(new CorsAuthorizationFilterFactory(MyAllowSpecificOrigins));
-            //});
 
             services.AddDbContext<Database.ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")).ConfigureWarnings(warnings => warnings.Throw(CoreEventId.IncludeIgnoredWarning))
            );
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
+          .AddJwtBearer(options =>
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = Configuration["Jwt:Issuer"],
-            ValidAudience = Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-        };
-    });
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = Configuration["Jwt:Issuer"],
+                ValidAudience = Configuration["Jwt:Issuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+            };
+        });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -75,18 +72,14 @@ namespace memoseeds
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-
             services.AddScoped<ITranslatorService, TranslatorService>();
-            //services.AddScoped(typeof(IRepository<Subject>), typeof(SubjectRepository));
             services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));
             services.AddScoped(typeof(ISubjectRepository), typeof(SubjectRepository));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
-            // services.Add<IRepository, SubjectRepository>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
-        options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-    );
-          
+            options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
         }
 
 
@@ -95,7 +88,7 @@ namespace memoseeds
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            
+
             else
             {
                 app.UseExceptionHandler("/Home/Error");
@@ -113,10 +106,10 @@ namespace memoseeds
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-        
+
 
         }
 
-      
+
     }
 }
