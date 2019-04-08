@@ -204,8 +204,8 @@ namespace memoseeds.Controllers
             try
             {
                 bool userHasModule = IsExist(userid, moduleid);
-
-                response = Ok(new { result = userHasModule });
+                Module real = UserRepository.GetModuleWithTerms(userid, moduleid);
+                response = Ok(new { result = userHasModule, moduleId = real.ModuleId });
             }
             catch (Exception e)
             {
