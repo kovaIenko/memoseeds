@@ -54,21 +54,7 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpPost("/updateImage")]
-        public IActionResult updateImage([FromBody]UserData usr)
-        {
-            IActionResult response = Unauthorized();
-            User user = UserRepository.GetById(usr.id);
-            if (user != null)
-            {
-                user.Img = usr.image;
-                UserRepository.Update(user);
-                response = Ok( new { data = user});
-            }
-            else
-                response = Ok(new { Error = "User with that username not found" });
-            return response;
-        }
+       
 
         private string GenerateJSONWebToken(User userInfo)
         {
@@ -141,12 +127,5 @@ namespace memoseeds.Controllers
         }
     }
 
-    public class UserData
-    {
-        [Required(ErrorMessage = "Id not specified")]
-        public long id { get; set; }
-
-        [Required(ErrorMessage = "Image not specified")]
-        public Byte[] image { get; set; }
-    }
+   
 }
