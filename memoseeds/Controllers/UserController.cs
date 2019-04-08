@@ -253,7 +253,8 @@ namespace memoseeds.Controllers
 
                     AquiredModules aquiredModules = CreateUserModule(userid, added.ModuleId);
                     UserRepository.InsertUserModule(aquiredModules);
-                    response = Ok(new { result = "success", moduleId = copied.ModuleId });
+                    response = Ok(new { result = "success", moduleId = copied.ModuleId, CreditsLeft = user.Credits
+                   });
                 }
                 else response = Ok(new { result = "Not enough credits." });
             }
