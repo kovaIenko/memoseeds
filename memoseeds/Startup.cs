@@ -20,6 +20,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Buffers;
+using System.Web.Http;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 
 namespace memoseeds
 {
@@ -29,13 +31,18 @@ namespace memoseeds
         {
             Configuration = configuration;
         }
-
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyAllowSpecificOrigins,
+                builder => builder.WithOrigins("https://memeseeds.herokuapp.com"));
+            });
+     
             services.AddDbContext<Database.ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")).ConfigureWarnings(warnings => warnings.Throw(CoreEventId.IncludeIgnoredWarning))
            );
@@ -72,6 +79,10 @@ namespace memoseeds
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
         options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
     );
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowMyOrigin"));
+            });
 
         }
 
@@ -87,7 +98,7 @@ namespace memoseeds
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -98,6 +109,11 @@ namespace memoseeds
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+        
+
         }
+
+      
     }
 }
