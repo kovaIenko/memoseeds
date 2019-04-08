@@ -53,7 +53,7 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpGet("/{userID}/setImage")]
+        [HttpPost("/{userID}/setImage")]
         public IActionResult setImage([FromRoute] long userId, [FromBody] UploadImageModel data)
         {
             IActionResult response = Unauthorized();
@@ -382,6 +382,14 @@ namespace memoseeds.Controllers
 
             [Required(ErrorMessage = "Terms not specified")]
             public ICollection<Term> Terms { set; get; }
+        }
+        public class UploadImageModel
+        {
+            [Required(ErrorMessage ="Description not specified")]
+            public string Description { get; set; }
+
+            [Required(ErrorMessage = "Data not specified")]
+            public string ImageData { get; set; }
         }
     }
 }
