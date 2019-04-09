@@ -38,7 +38,7 @@ namespace memoseeds.Controllers
                 if (a != null)
                 {
                     if (a.Img != null)
-                        response = bytesToImage(a.Img);
+                        response = Ok(bytesToImage(a.Img));
                     else
                         response = Ok(new { err = "User haven't image" });
                 }
