@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace memoseeds.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("user")]
     public class UserController : Controller
@@ -74,6 +74,22 @@ namespace memoseeds.Controllers
                 response = Ok(new { err = "User doesn't exist" });
 
             }
+            return response;
+        }
+
+        [HttpPost("/updateImage")]
+        public IActionResult updateImage([FromBody]UserData usr)
+        {
+            IActionResult response = Unauthorized();
+            User user = UserRepository.GetById(usr.id);
+            if (user != null)
+            {
+                user.Img = usr.image;
+                UserRepository.Update(user);
+                response = Ok(new { data = user });
+            }
+            else
+                response = Ok(new { Error = "User with that username not found" });
             return response;
         }
 

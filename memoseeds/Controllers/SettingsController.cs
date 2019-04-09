@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace memoseeds.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("settings")]
     public class SettingsController : Controller
     {

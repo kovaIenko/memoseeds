@@ -10,7 +10,7 @@ namespace memoseeds.Controllers
 {
 
     [ApiController]
-   // [Authorize]
+    [Authorize]
     public class StudyController:  Controller
     {
         private IModuleRepository ModuleRepository;

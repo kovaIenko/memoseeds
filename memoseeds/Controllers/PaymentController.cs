@@ -10,10 +10,13 @@ using System;
 
 using memoseeds.Repositories;
 using memoseeds.Models.Entities;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace memoseeds.Controllers
 {
+   
+
+    [Authorize]
     [Route("purchase")]
     [ApiController]
     public class PaymentController : Controller

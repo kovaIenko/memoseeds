@@ -3,14 +3,13 @@ using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using memoseeds.Models;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection.Metadata;
-using memoseeds.Models;
 
 namespace memoseeds.Controllers
 {
@@ -19,13 +18,13 @@ namespace memoseeds.Controllers
     {
         private IUserRepository UserRepository;
         private IConfiguration _config;
-        private readonly HashPassword HashClass;
+        private HashPassword HashClass;
 
         public AccountController(IUserRepository UserRepositor, IConfiguration config, HashPassword HashClass)
         {
             this.UserRepository = UserRepositor;
             this._config = config;
-            this.HashClass = HashClass;
+            this.HashClass = HashClass ?? throw new ArgumentNullException(nameof(HashClass));
         }
 
         // POST:
@@ -56,21 +55,6 @@ namespace memoseeds.Controllers
             return response;
         }
 
-        [HttpPost("/updateImage")]
-        public IActionResult updateImage([FromBody]UserData usr)
-        {
-            IActionResult response = Unauthorized();
-            User user = UserRepository.GetById(usr.id);
-            if (user != null)
-            {
-                user.Img = usr.image;
-                UserRepository.Update(user);
-                response = Ok(new { data = user });
-            }
-            else
-                response = Ok(new { Error = "User with that username not found" });
-            return response;
-        }
 
         private string GenerateJSONWebToken(User userInfo)
         {
