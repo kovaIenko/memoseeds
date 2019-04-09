@@ -57,7 +57,6 @@ namespace memoseeds.Controllers
                 long subjectId = (long)category.SubjectId;
                 Subject subject = SubjectRepository.GetSubjectById(subjectId);
 
-              
                 module.Terms = LeaveNTerms(module.Terms);
                 response = Ok(new { Subject = subject.Name, Category = category.Name, Module = module });
             }

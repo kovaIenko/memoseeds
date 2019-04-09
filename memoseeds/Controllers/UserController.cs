@@ -163,7 +163,9 @@ namespace memoseeds.Controllers
                     Category category = SubjectRepository.GetCategoryName(module.Category);
                     old.CategoryId = category.CategoryId;
                 }
-
+                old.IsLocal = module.IsLocal;
+                old.Price = module.Price;
+                old.Name = module.Name;
                 AddTerms(old.Terms, module.Terms, old.ModuleId);
                 Module updated = ModuleRepository.Update(old);
 
