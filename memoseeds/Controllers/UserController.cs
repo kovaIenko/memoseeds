@@ -142,6 +142,12 @@ namespace memoseeds.Controllers
                 if (!IsExist(module.UserId, module.ModuleId)) return Ok(new { result = "User doesn't have this module." });
                 Module old = ModuleRepository.GetModuleWithTerms(module.ModuleId);
 
+                if (!module.Category.Equals("default"))
+                {
+                    Category category = SubjectRepository.GetCategoryName(module.Category);
+                    old.CategoryId = category.CategoryId;
+                }
+
                 AddTerms(old.Terms, module.Terms, old.ModuleId);
                 Module updated = ModuleRepository.Update(old);
 
@@ -204,6 +210,7 @@ namespace memoseeds.Controllers
             try
             {
                 bool userHasModule = IsExist(userid, moduleid);
+                if(!userHasModule) return Ok(new { result = userHasModule });
                 Module real = UserRepository.GetModuleWithTerms(userid, moduleid);
                 response = Ok(new { result = userHasModule, moduleId = real.ModuleId });
             }
@@ -367,6 +374,9 @@ namespace memoseeds.Controllers
 
         public class EditModuleData
         {
+            [Required(ErrorMessage = "Category name not specified")]
+            public string Category { set; get; }
+
             [Required(ErrorMessage = "User id not specified")]
             public long UserId { set; get; }
 
@@ -385,6 +395,7 @@ namespace memoseeds.Controllers
             [Required(ErrorMessage = "Terms not specified")]
             public ICollection<Term> Terms { set; get; }
         }
+
         public class UploadImageModel
         {
             [Required(ErrorMessage ="Description not specified")]

@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Buffers;
 using System.Web.Http;
 using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using memoseeds.Models;
 
 namespace memoseeds
 {
@@ -76,6 +77,7 @@ namespace memoseeds
             services.AddScoped(typeof(IModuleRepository), typeof(ModuleRepository));
             services.AddScoped(typeof(ISubjectRepository), typeof(SubjectRepository));
             services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
+            services.AddTransient<HashPassword>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);

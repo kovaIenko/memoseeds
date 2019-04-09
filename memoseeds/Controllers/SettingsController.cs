@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using memoseeds.Models;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -68,11 +69,13 @@ namespace memoseeds.Controllers
                 User entity = UserRepository.GetById(id);
                 if (entity != null)
                 {
-                    if (entity.Password.Equals(data.Old))
+                string oldHashed = HashPassword.Encrypt(data.Old);
+                    if (entity.Password.Equals(oldHashed))
                     {
-                        if (!data.Old.Equals(data.New))
+                        string newHashed = HashPassword.Encrypt(data.New);
+                        if (!oldHashed.Equals(newHashed))
                         {
-                            entity.Password = data.New;
+                            entity.Password = newHashed;
                             User updated = UserRepository.Update(entity);
                             int count = UserRepository.NumbOfModules(entity.UserId);
                             response = Ok(new { UpdatedUser = updated, CountOfModules = count });

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using memoseeds.Models.Entities;
 using memoseeds.Repositories;
 using Microsoft.AspNetCore.Authorization;
@@ -11,20 +10,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection.Metadata;
-
+using memoseeds.Models;
 
 namespace memoseeds.Controllers
 {
     [ApiController]
     public class AccountController : Controller
     {
-        private IUserRepository UserRepository;        
+        private IUserRepository UserRepository;
         private IConfiguration _config;
+        private readonly HashPassword HashClass;
 
-        public AccountController(IUserRepository UserRepositor, IConfiguration config)
+        public AccountController(IUserRepository UserRepositor, IConfiguration config, HashPassword HashClass)
         {
-            UserRepository = UserRepositor;
-            _config = config;
+            this.UserRepository = UserRepositor;
+            this._config = config;
+            this.HashClass = HashClass;
         }
 
         // POST:
@@ -41,7 +42,8 @@ namespace memoseeds.Controllers
 
             if (user != null)
             {
-                if (user.Password.Equals(login.Password))
+                string hashedPass = HashPassword.Encrypt(login.Password);
+                if (user.Password.Equals(hashedPass))
                 {
                     var tokenString = GenerateJSONWebToken(user);
                     response = Ok(new { token = tokenString, info = user });
@@ -63,7 +65,7 @@ namespace memoseeds.Controllers
             {
                 user.Img = usr.image;
                 UserRepository.Update(user);
-                response = Ok( new { data = user});
+                response = Ok(new { data = user });
             }
             else
                 response = Ok(new { Error = "User with that username not found" });
@@ -93,24 +95,24 @@ namespace memoseeds.Controllers
         public IActionResult Register([FromBody]UserRegisterData data)
         {
             IActionResult response = Unauthorized();
-                User user = UserRepository.GetUserByEmail(data.Email);
-                if (user != null)
-                    response = Ok(new { Error = "This email is already taken." });
-                user = UserRepository.GetUserByName(data.Username);
-                if (user != null)
-                    response = Ok(new { Error = "This username is already taken." });
-                if (user == null)
+            User user = UserRepository.GetUserByEmail(data.Email);
+            if (user != null)
+                response = Ok(new { Error = "This email is already taken." });
+            user = UserRepository.GetUserByName(data.Username);
+            if (user != null)
+                response = Ok(new { Error = "This username is already taken." });
+            if (user == null)
+            {
+                // adding user to db
+                user = new User
                 {
-                    // adding user to db
-                    user = new User
-                    {
-                        Username = data.Username,
-                        Email = data.Email,
-                        Password = data.Password
-                    };
-                    UserRepository.Insert(user);
-                    response = Ok(new { token = GenerateJSONWebToken(user) , info = user});
-                }
+                    Username = data.Username,
+                    Email = data.Email,
+                    Password = HashPassword.Encrypt(data.Password)
+                };
+                UserRepository.Insert(user);
+                response = Ok(new { token = GenerateJSONWebToken(user), info = user });
+            }
             return response;
         }
 
