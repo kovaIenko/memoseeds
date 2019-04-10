@@ -80,6 +80,7 @@ namespace memoseeds.Controllers
         {
             IActionResult response = Unauthorized();
             User user = UserRepository.GetUserByEmail(data.Email);
+
             if (user != null)
                 response = Ok(new { Error = "This email is already taken." });
             user = UserRepository.GetUserByName(data.Username);
@@ -103,16 +104,31 @@ namespace memoseeds.Controllers
         [HttpPost("/fbsignup")]
         public IActionResult Fbsignup([FromBody]UserRegisterData data)
         {
+
             User user = UserRepository.GetUserByEmail(data.Email);
-            if (user != null)
-                return Login(new UserAuthenticateData
-                {
-                    Username = data.Email,
-                    IsUsername = false,
-                    Password = data.Password
-                });
+            string password = HashPassword.Encrypt(data.Password, data.Email + data.Username);
+            if (user != null) return Login(new UserAuthenticateData
+            {
+                Username = data.Email,
+                IsUsername = false,
+                Password = password
+            });
             else
+            {
+                string username = data.Username;
+                Random random = new Random();
+                user = UserRepository.GetUserByName(username);
+
+                while (user != null)
+                {
+                    username = data.Username + random.Next();
+
+                    user = UserRepository.GetUserByName(username);
+                }
+                data.Username = username;
+                data.Password = password;
                 return Register(data);
+            }
         }
 
         public class UserAuthenticateData

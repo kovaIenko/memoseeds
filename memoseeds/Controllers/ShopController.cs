@@ -56,9 +56,9 @@ namespace memoseeds.Controllers
                 Category category = SubjectRepository.GetCategoryById(categoryId);
                 long subjectId = (long)category.SubjectId;
                 Subject subject = SubjectRepository.GetSubjectById(subjectId);
-
+                int countTerms = module.Terms.Count;
                 module.Terms = LeaveNTerms(module.Terms);
-                response = Ok(new { Subject = subject.Name, Category = category.Name, Module = module });
+                response = Ok(new { Subject = subject.Name, Category = category.Name, Module = module, NumbTerms = countTerms });
             }
             catch (Exception e)
             {
