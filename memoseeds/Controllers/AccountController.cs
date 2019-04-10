@@ -100,6 +100,33 @@ namespace memoseeds.Controllers
             return response;
         }
 
+        [HttpPost("/fbsignup")]
+        public IActionResult Fbsignup([FromBody]UserRegisterData data)
+        {
+            User user = UserRepository.GetUserByEmail(data.Email);
+            if (user != null)
+                return Login(new UserAuthenticateData
+                {
+                    Username = data.Username,
+                    IsUsername = true,
+                    Password = HashPassword.Encrypt(data.Password, data.Email + data.Username)
+                });
+            else
+            {
+                string username = data.Username;
+                Random random = new Random();
+                user = UserRepository.GetUserByName(username);
+                while (user != null)
+                {
+                    username = data.Username + random.Next();
+                    user = UserRepository.GetUserByName(username);
+                }
+                data.Username = username;
+                data.Password = HashPassword.Encrypt(data.Password, data.Email + data.Username);
+                return Register(data);
+            }
+        }
+
         public class UserAuthenticateData
         {
             [Required(ErrorMessage = "Username not specified")]
