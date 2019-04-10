@@ -107,8 +107,8 @@ namespace memoseeds.Controllers
             if (user != null)
                 return Login(new UserAuthenticateData
                 {
-                    Username = data.Username,
-                    IsUsername = true,
+                    Username = data.Email,
+                    IsUsername = false,
                     Password = HashPassword.Encrypt(data.Password, data.Email + data.Username)
                 });
             else
