@@ -104,12 +104,13 @@ namespace memoseeds.Controllers
         public IActionResult Fbsignup([FromBody]UserRegisterData data)
         {
             User user = UserRepository.GetUserByEmail(data.Email);
+            string password = HashPassword.Encrypt(data.Password, data.Email + data.Username);
             if (user != null)
                 return Login(new UserAuthenticateData
                 {
                     Username = data.Email,
                     IsUsername = false,
-                    Password = HashPassword.Encrypt(data.Password, data.Email + data.Username)
+                    Password = password
                 });
             else
             {
@@ -122,7 +123,7 @@ namespace memoseeds.Controllers
                     user = UserRepository.GetUserByName(username);
                 }
                 data.Username = username;
-                data.Password = HashPassword.Encrypt(data.Password, data.Email + data.Username);
+                data.Password = password;
                 return Register(data);
             }
         }
